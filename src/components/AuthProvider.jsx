@@ -24,11 +24,11 @@ export function AuthProvider(props) {
 
     onMount(async () => {
         import.meta.env.DEV && console.log("Updating user status initially");
-        updateUser();
+        await updateUser();
 
         import.meta.env.DEV && console.log("Starting user status update interval");
-        interval = setInterval(() => {
-            updateUser();
+        interval = setInterval(async () => {
+            await updateUser();
         }, 10000);
     });
 
