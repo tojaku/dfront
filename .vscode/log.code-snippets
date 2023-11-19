@@ -1,0 +1,37 @@
+{
+    "Log Standard": {
+        "scope": "javascript,typescript,javascriptreact",
+        "prefix": "ddlog",
+        "body": [
+            "import.meta.env.DEV && console.log(\"$1\");"
+        ]
+    },
+    "Log Warning": {
+        "scope": "javascript,typescript,javascriptreact",
+        "prefix": "ddwarn",
+        "body": [
+            "import.meta.env.DEV && console.warn(\"$1\");"
+        ]
+    },
+    "Log Error": {
+        "scope": "javascript,typescript,javascriptreact",
+        "prefix": "dderror",
+        "body": [
+            "import.meta.env.DEV && console.error(\"$1\");"
+        ]
+    },
+    "Log Group Start": {
+        "scope": "javascript,typescript,javascriptreact",
+        "prefix": "ddgroup",
+        "body": [
+            "import.meta.env.DEV && console.group(\"$1\");"
+        ]
+    },
+    "Log Group End": {
+        "scope": "javascript,typescript,javascriptreact",
+        "prefix": "ddgroupend",
+        "body": [
+            "import.meta.env.DEV && console.groupEnd();"
+        ]
+    }
+}
