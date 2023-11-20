@@ -7,7 +7,7 @@ export async function getCurrentUser() {
         import.meta.env.DEV && console.log("Getting current user data");
         await directus.refresh();
         const user = await directus.request(readMe());
-        import.meta.env.DEV && console.log("User found", user.id, user.email);
+        import.meta.env.DEV && console.log("User found", user.email);
         return user;
     } catch (error) {
         import.meta.env.DEV && console.warn("User not found");

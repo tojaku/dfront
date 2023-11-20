@@ -17,7 +17,7 @@ export default function Header() {
                     <A class="btn btn-outline mx-2" href="/user/signin">Prijava</A>
                 </Show>
                 <Show when={user() !== null}>
-                    <A class="btn btn-outline mx-2" href={adminUrl}>Administracija</A>
+                    <A class="btn btn-outline mx-2" href={adminUrl} target="_blank">Administracija</A>
                     <A class="btn btn-outline" href="/user/signout">Odjava</A>
                 </Show>
             </div>

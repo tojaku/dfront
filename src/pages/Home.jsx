@@ -9,7 +9,7 @@ export default function Home() {
                     <h1 class="text-5xl font-bold text-sky-600">Dobro došli</h1>
                     <p class="text-xl py-6">
                         Dobro došli na aplikaciju <span class="text-orange-400">{appName}</span>. Mogućnosti za rad s aplikacijom nalaze se u gornjem dijelu stranice.
-                        Ukoliko želite pristupiti sučelju za upravljanje, to možete učiniti na sljedećoj <a class="link text-sky-600 hover:text-sky-400" href={adminUrl}>vezi</a>.
+                        Ukoliko želite pristupiti sučelju za upravljanje, to možete učiniti na sljedećoj <a class="link text-sky-600 hover:text-sky-400" href={adminUrl} target="_blank">vezi</a>.
                     </p>
                 </div>
             </div>
