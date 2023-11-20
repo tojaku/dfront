@@ -11,7 +11,7 @@ export default function Signin() {
     const [error, setError] = createSignal(false);
 
     createEffect(() => {
-        import.meta.env.DEV && console.log("Updating signed in status"); // TODO problem, updating only once
+        import.meta.env.DEV && console.log("Updating signed in status");
         if (user() !== null) {
             setSignedin(true);
         } else if (user() === null) {
@@ -63,7 +63,7 @@ export default function Signin() {
                 </form>
             </Show>
 
-            <Show when={signedin() === true}>
+            <Show when={signedin() === true && user() !== null}>
                 <div class="hero min-h-[50vh] bg-base-200">
                     <div class="hero-content text-center">
                         <div class="max-w-xl">

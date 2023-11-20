@@ -1,4 +1,4 @@
-import { createSignal, createContext, useContext, onMount, onCleanup, createEffect } from "solid-js";
+import { createSignal, createContext, useContext, onMount, onCleanup } from "solid-js";
 import { Navigate } from "@solidjs/router";
 import { getCurrentUser } from "../services/directus.js";
 
@@ -29,7 +29,7 @@ export function AuthProvider(props) {
         import.meta.env.DEV && console.log("Starting user status update interval");
         interval = setInterval(async () => {
             await updateUser();
-        }, 10000);
+        }, 60000);
     });
 
     onCleanup(() => {
