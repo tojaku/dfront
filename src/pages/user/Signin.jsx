@@ -1,4 +1,3 @@
-
 import { createEffect, createSignal } from "solid-js";
 import { A } from "@solidjs/router";
 import { directus, getCurrentUser } from "../../services/directus.js";
@@ -40,7 +39,7 @@ export default function Signin() {
     return (
         <>
             <Show when={signedin() === false}>
-                <div class="prose">
+                <div class="prose mb-4">
                     <h1>Prijava korisnika</h1>
                 </div>
                 <form onSubmit={formSubmit}>
@@ -69,7 +68,7 @@ export default function Signin() {
                         <div class="max-w-xl">
                             <h1 class="text-5xl font-bold">Uspješno ste prijavljeni</h1>
                             <p class="py-6">Prijavljeni ste kao korisnik {user().first_name + " " + user().last_name}. Ukoliko prepoznajete svoj korisnički račun možete nastaviti na naslovnicu. U protivnom se možete se odjaviti.</p>
-                            <A class="btn btn-ghost mx-4" href="/user/signout">Odjava</A>
+                            <A class="btn btn-ghost mx-2" href="/user/signout">Odjava</A>
                             <A class="btn btn-primary" href="/">Naslovnica</A>
                         </div>
                     </div>
