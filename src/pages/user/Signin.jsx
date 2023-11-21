@@ -1,5 +1,6 @@
 import { createEffect, createSignal } from "solid-js";
 import { A } from "@solidjs/router";
+import { login } from "@directus/sdk";
 import { directus, getCurrentUser } from "../../services/directus.js";
 import { useAuth } from "../../components/AuthProvider.jsx";
 
@@ -25,7 +26,9 @@ export default function Signin() {
 
             const formData = new FormData(event.target);
             import.meta.env.DEV && console.log("Submitting form", formData);
-            const result = await directus.login(formData.get("email"), formData.get("password"));
+
+            //const result = await directus.login(formData.get("email"), formData.get("password"));
+            const result = await directus.request(login(formData.get("email"), formData.get("password"), { mode: "cookie" }));
             import.meta.env.DEV && console.log("Server response", result);
 
             const currentUser = await getCurrentUser();

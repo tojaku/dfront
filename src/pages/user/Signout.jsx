@@ -1,5 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 import { A } from "@solidjs/router";
+import { logout } from "@directus/sdk";
 import { directus } from "../../services/directus.js";
 import { useAuth } from "../../components/AuthProvider.jsx";
 
@@ -9,9 +10,12 @@ export default function Signout() {
     const [signedin, setSignedin] = createSignal(null);
 
     onMount(async () => {
-        if (user()) {
+        if (user() !== null) {
             import.meta.env.DEV && console.log("Signing out user");
-            await directus.logout();
+            
+            //await directus.logout();
+            await directus.request(logout());
+
             setUser(null);
         }
         setSignedin(false);
