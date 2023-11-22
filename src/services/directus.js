@@ -9,9 +9,9 @@ export async function getCurrentUser() {
 
         //await directus.refresh();
         const result = await directus.request(refresh("cookie"));
-        import.meta.env.DEV && console.log("Refresh result", result);
+        import.meta.env.DEV && console.log("Token refreshed");
 
-        const user = await directus.request(readMe());
+        const user = await directus.request(readMe(result));
         import.meta.env.DEV && console.log("User found", user.email);
         return user;
     } catch (error) {

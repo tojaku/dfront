@@ -25,11 +25,9 @@ export default function Signin() {
             setError(false);
 
             const formData = new FormData(event.target);
-            import.meta.env.DEV && console.log("Submitting form", formData);
-
-            //const result = await directus.login(formData.get("email"), formData.get("password"));
+            import.meta.env.DEV && console.log("Received form data", formData);
             const result = await directus.request(login(formData.get("email"), formData.get("password"), { mode: "cookie" }));
-            import.meta.env.DEV && console.log("Server response", result);
+            import.meta.env.DEV && console.log("User signed in");
 
             const currentUser = await getCurrentUser();
             setUser(currentUser);

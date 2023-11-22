@@ -12,10 +12,8 @@ export default function Signout() {
     onMount(async () => {
         if (user() !== null) {
             import.meta.env.DEV && console.log("Signing out user");
-            
             //await directus.logout();
             await directus.request(logout());
-
             setUser(null);
         }
         setSignedin(false);
