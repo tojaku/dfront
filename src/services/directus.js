@@ -6,16 +6,14 @@ export const directus = createDirectus(import.meta.env.VITE_DIRECTUS_URL).with(r
 export async function getCurrentUser() {
     try {
         import.meta.env.DEV && console.log("Getting current user data");
-
         //await directus.refresh();
-        const result = await directus.request(refresh("cookie"));
-        import.meta.env.DEV && console.log("Token refreshed");
-
-        const user = await directus.request(readMe(result));
-        import.meta.env.DEV && console.log("User found", user.email);
+        import.meta.env.DEV && console.log("Fetching and attaching access token to request");
+        const token = await directus.request(refresh("cookie"));
+        const user = await directus.request(readMe({ ...token }));
+        import.meta.env.DEV && console.log("User signed in", user.email);
         return user;
     } catch (error) {
-        import.meta.env.DEV && console.warn("User not found", error);
+        import.meta.env.DEV && console.warn("User not signed in");
         return null;
     }
 }

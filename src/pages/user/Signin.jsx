@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
 import { A } from "@solidjs/router";
 import { login } from "@directus/sdk";
 import { directus, getCurrentUser } from "../../services/directus.js";
@@ -7,28 +7,16 @@ import { useAuth } from "../../components/AuthProvider.jsx";
 export default function Signin() {
     const [user, setUser] = useAuth();
 
-    const [signedin, setSignedin] = createSignal(null);
     const [error, setError] = createSignal(false);
-
-    createEffect(() => {
-        import.meta.env.DEV && console.log("Updating signed in status");
-        if (user() !== null) {
-            setSignedin(true);
-        } else if (user() === null) {
-            setSignedin(false);
-        }
-    });
 
     async function formSubmit(event) {
         try {
             event.preventDefault();
             setError(false);
-
             const formData = new FormData(event.target);
             import.meta.env.DEV && console.log("Received form data", formData);
-            const result = await directus.request(login(formData.get("email"), formData.get("password"), { mode: "cookie" }));
+            await directus.request(login(formData.get("email"), formData.get("password"), { mode: "cookie" }));
             import.meta.env.DEV && console.log("User signed in");
-
             const currentUser = await getCurrentUser();
             setUser(currentUser);
         } catch (error) {
@@ -39,7 +27,7 @@ export default function Signin() {
 
     return (
         <>
-            <Show when={signedin() === false}>
+            <Show when={user() === null}>
                 <div class="prose mb-4">
                     <h1>Prijava korisnika</h1>
                 </div>
@@ -63,7 +51,7 @@ export default function Signin() {
                 </form>
             </Show>
 
-            <Show when={signedin() === true && user() !== null}>
+            <Show when={user() !== null}>
                 <div class="hero min-h-[50vh] bg-base-200">
                     <div class="hero-content text-center">
                         <div class="max-w-xl">
