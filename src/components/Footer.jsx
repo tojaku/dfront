@@ -31,8 +31,7 @@ export default function Footer() {
                 setCookiePolicy(cookiePolicyItem.content);
             }
         } catch (error) {
-            console.log(error);
-            import.meta.env.DEV && console.warn("Privacy and cookie policies could not be loaded due to error");
+            import.meta.env.DEV && console.warn("Privacy and cookie policies could not be loaded");
         }
     });
 

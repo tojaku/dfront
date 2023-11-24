@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
-import { refresh, createItem } from "@directus/sdk";
-import { directus } from "../services/directus.js";
+import { createItem } from "@directus/sdk";
+import { directus, getAccessToken } from "../services/directus.js";
 import { useAuth } from "../components/AuthProvider";
 
 export default function Contact() {
@@ -14,11 +14,11 @@ export default function Contact() {
             event.preventDefault();
             setError(false);
             const formData = new FormData(event.target);
-            import.meta.env.DEV && console.log("Received form data", formData);
+            import.meta.env.DEV && console.log("Form data", formData);
             let query = {};
             if (user() !== null) {
-                import.meta.env.DEV && console.log("Fetching and attaching access token to request");
-                query = { ...query, ...await directus.request(refresh("cookie")) };
+                query = { ...query, ...await getAccessToken() };
+                import.meta.env.DEV && console.log("Access token attached to query");
             }
             await directus.request(createItem("contact", Object.fromEntries(formData.entries()), query));
             import.meta.env.DEV && console.log("Message saved");

@@ -10,6 +10,7 @@ export function useAuth() {
 
 export function AuthProvider(props) {
     const [user, setUser] = createSignal(null);
+    const [loading, setLoading] = createSignal(true);
 
     let interval = null;
 
@@ -25,6 +26,7 @@ export function AuthProvider(props) {
     onMount(async () => {
         import.meta.env.DEV && console.log("Updating user status initially");
         await updateUser();
+        setLoading(false);
 
         import.meta.env.DEV && console.log("Starting user status update interval");
         interval = setInterval(async () => {
@@ -38,7 +40,9 @@ export function AuthProvider(props) {
     });
 
     return (
-        <AuthContext.Provider value={[user, setUser]}>{props.children}</AuthContext.Provider>
+        <Show when={!loading()}>
+            <AuthContext.Provider value={[user, setUser]}>{props.children}</AuthContext.Provider>
+        </Show>
     );
 }
 

@@ -7,6 +7,7 @@ import Home from "./pages/Home.jsx";
 import Signin from "./pages/user/Signin.jsx";
 import Signout from "./pages/user/Signout.jsx";
 import Contact from "./pages/Contact.jsx";
+import List from "./pages/panels/List.jsx";
 
 import "./App.css";
 
@@ -22,6 +23,9 @@ export default function App() {
                     <Route path="/user">
                         <Route path="/signin" component={Signin} />
                         <Route path="/signout" component={Signout} />
+                    </Route>
+                    <Route path="/panels">
+                        <Route path="/list" component={List} />
                     </Route>
                     <Route
                         path="*"
