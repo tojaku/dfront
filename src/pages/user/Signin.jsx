@@ -1,11 +1,10 @@
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { A } from "@solidjs/router";
-import { login } from "@directus/sdk";
-import { directus, getCurrentUser } from "../../services/directus.js";
-import { useAuth } from "../../components/AuthProvider.jsx";
+import { userStore } from "../../services/directus.js";
+import { signin } from "../../services/directus.js";
 
 export default function Signin() {
-    const [user, setUser] = useAuth();
+    const [user, setUser] = userStore();
 
     const [error, setError] = createSignal(false);
 
@@ -14,11 +13,9 @@ export default function Signin() {
             event.preventDefault();
             setError(false);
             const formData = new FormData(event.target);
-            import.meta.env.DEV && console.log("Received form data", formData);
-            await directus.request(login(formData.get("email"), formData.get("password"), { mode: "cookie" }));
-            import.meta.env.DEV && console.log("User signed in");
-            const currentUser = await getCurrentUser();
-            setUser(currentUser);
+            import.meta.env.DEV && console.log("[formSubmit]", formData);
+            await signin(formData.get("email"), formData.get("password"));
+            import.meta.env.DEV && console.log("[formSubmit] OK");
         } catch (error) {
             setError(true);
             import.meta.env.DEV && console.error(error);
@@ -28,7 +25,7 @@ export default function Signin() {
     return (
         <>
             <Show when={user() === null}>
-                <div class="prose mb-4">
+                <div class="prose mb-8">
                     <h1>Prijava korisnika</h1>
                 </div>
                 <form onSubmit={formSubmit}>
@@ -67,7 +64,7 @@ export default function Signin() {
             <Show when={error() === true}>
                 <div role="alert" class="alert alert-error">
                     <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <span>Dogodila se greška prilikom prijave. Provjerite svoje korisničke podatke i pokušajte ponovno.</span>
+                    <span>Dogodila se greška prilikom prijave korisnika. Provjerite svoje korisničke podatke i pokušajte ponovno.</span>
                 </div>
             </Show>
         </>

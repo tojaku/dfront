@@ -1,7 +1,6 @@
-import { onMount, createSignal } from "solid-js";
+import { onMount, createSignal, Show } from "solid-js";
 import { A } from "@solidjs/router";
-import { readItem } from "@directus/sdk";
-import { directus } from "../services/directus.js";
+import { getItems } from "../services/directus.js";
 
 export default function Home() {
     const appName = import.meta.env.VITE_APP_NAME;
@@ -11,14 +10,20 @@ export default function Home() {
 
     onMount(async () => {
         try {
-            const result = await directus.request(readItem("static", "about_application"));
+            const result = await getItems("static", {
+                filter: {
+                    "id": {
+                        "_eq": "about_application"
+                    }
+                }
+            }, false);
 
             if (result !== null) {
-                import.meta.env.DEV && console.log("Application description loaded");
-                setAboutApplication(result.content);
+                setAboutApplication(result[0].content);
+                import.meta.env.DEV && console.log("[onMount] Application description loaded");
             }
         } catch (error) {
-            import.meta.env.DEV && console.warn("Application description could not be loaded due to error");
+            import.meta.env.DEV && console.error(error);
         }
     });
 

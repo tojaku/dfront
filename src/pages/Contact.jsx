@@ -1,10 +1,8 @@
-import { createSignal } from "solid-js";
-import { createItem } from "@directus/sdk";
-import { directus, getAccessToken } from "../services/directus.js";
-import { useAuth } from "../components/AuthProvider";
+import { createSignal, Show } from "solid-js";
+import { userStore, saveItems } from "../services/directus.js";
 
 export default function Contact() {
-    const [user, setUser] = useAuth();
+    const [user, setUser] = userStore();
 
     const [success, setSuccess] = createSignal(false);
     const [error, setError] = createSignal(false);
@@ -14,14 +12,10 @@ export default function Contact() {
             event.preventDefault();
             setError(false);
             const formData = new FormData(event.target);
-            import.meta.env.DEV && console.log("Form data", formData);
-            let query = {};
-            if (user() !== null) {
-                query = { ...query, ...await getAccessToken() };
-                import.meta.env.DEV && console.log("Access token attached to query");
-            }
-            await directus.request(createItem("contact", Object.fromEntries(formData.entries()), query));
-            import.meta.env.DEV && console.log("Message saved");
+            import.meta.env.DEV && console.log("[formSubmit]", formData);
+            const withCredentials = user() !== null ? true : false;
+            await saveItems("contact", [Object.fromEntries(formData.entries())], withCredentials);
+            import.meta.env.DEV && console.log("[formSubmit] OK");
             setSuccess(true);
         } catch (error) {
             setError(true);
@@ -32,6 +26,9 @@ export default function Contact() {
     return (
         <>
             <Show when={success() === false}>
+                <div class="prose mb-8">
+                    <h1>Kontaktirajte nas</h1>
+                </div>
                 <form onSubmit={formSubmit}>
                     <Show when={user() === null}>
                         <div class="form-control w-full">
@@ -55,7 +52,7 @@ export default function Contact() {
                         <label class="label">
                             <span class="label-text">Poruka</span>
                         </label>
-                        <textarea name="message" class="textarea textarea-bordered" required=""></textarea>
+                        <textarea name="message" class="textarea textarea-bordered" required="" rows={10}></textarea>
                     </div>
 
                     <div class="flex flex-nowrap gap-2 w-full my-4">

@@ -1,7 +1,6 @@
-import { createSignal, onMount } from "solid-js";
+import { createSignal, onMount, Show } from "solid-js";
 import { A } from "@solidjs/router";
-import { readItems } from "@directus/sdk";
-import { directus } from "../services/directus.js";
+import { getItems } from "../services/directus.js";
 
 export default function Footer() {
     const appName = import.meta.env.VITE_APP_NAME;
@@ -11,27 +10,27 @@ export default function Footer() {
 
     onMount(async () => {
         try {
-            const result = await directus.request(readItems("static", {
+            const result = await getItems("static", {
                 filter: {
                     "id": {
                         "_in": ["privacy_policy", "cookie_policy"]
                     }
                 }
-            }));
+            }, false);
 
             const privacyPolicyItem = result.find((item) => item.id === "privacy_policy");
             if (privacyPolicyItem !== undefined) {
-                import.meta.env.DEV && console.log("Privacy policy loaded");
                 setPrivacyPolicy(privacyPolicyItem.content);
+                import.meta.env.DEV && console.log("[onMount] Privacy policy loaded");
             }
 
             const cookiePolicyItem = result.find((item) => item.id === "cookie_policy");
             if (cookiePolicyItem !== undefined) {
-                import.meta.env.DEV && console.log("Cookie policy loaded");
                 setCookiePolicy(cookiePolicyItem.content);
+                import.meta.env.DEV && console.log("[onMount] Cookie policy loaded");
             }
         } catch (error) {
-            import.meta.env.DEV && console.warn("Privacy and cookie policies could not be loaded");
+            import.meta.env.DEV && console.error(error);
         }
     });
 
