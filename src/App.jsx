@@ -14,31 +14,32 @@ import "./App.css";
 
 export default function App() {
     return (
-        <Routes>
-            <Route path="/" element={
-                <AuthorizationBoundary>
-                    <Header />
-                    <div class="container mx-auto px-4 py-8 min-h-[70vh]"><Outlet /></div>
-                    <Footer />
-                </AuthorizationBoundary>
-            }>
-                <Route path="/" component={Home} />
-                <Route path="/contact" component={Contact} />
-                <Route path="/error" component={Error} />
-                <Route path="/user">
-                    <Route path="/signin" component={Signin} />
-                    <Route path="/signout" component={Signout} />
+        <AuthorizationBoundary>
+            <Routes>
+                <Route path="/" element={
+                    <>
+                        <Header />
+                        <div class="container mx-auto px-4 py-8 min-h-[70vh]"><Outlet /></div>
+                        <Footer />
+                    </>
+                }>
+                    <Route path="/" component={Home} />
+                    <Route path="/contact" component={Contact} />
+                    <Route path="/error" component={Error} />
+                    <Route path="/user">
+                        <Route path="/signin" component={Signin} />
+                        <Route path="/signout" component={Signout} />
+                    </Route>
+                    <Route path="/panels">
+                        <Route path="/list" component={PanelsList} />
+                    </Route>
+                    <Route
+                        path="*"
+                        element={<Navigate href="/error" state={{ error: { title: "404", message: "Tražena stranica ne postoji." } }} />}
+                    />
                 </Route>
-                <Route path="/panels">
-                    <Route path="/list" component={PanelsList} />
-                </Route>
-                <Route
-                    path="*"
-                    element={<Navigate href="/error" state={{ error: { title: "404", message: "Tražena stranica ne postoji." } }} />}
-                />
-            </Route>
-            <Route path="/panels/:id" component={PanelsView} />
-        </Routes>
-
+                <Route path="/panels/:id" component={PanelsView} />
+            </Routes>
+        </AuthorizationBoundary>
     )
 }
