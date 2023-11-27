@@ -12,6 +12,8 @@ import PanelsView from "./pages/panels/View.jsx";
 
 import "./App.css";
 
+// "start": "npx http-server ./dist",
+
 export default function App() {
     return (
         <AuthorizationBoundary>
