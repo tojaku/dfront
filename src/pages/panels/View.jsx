@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createSignal, Show, For } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { getItems } from "../../services/directus";
+import CountdownTimer from "../../components/CountdownTimer.jsx";
 
 export default function PanelsView() {
     const adminUrl = import.meta.env.VITE_DIRECTUS_URL;
@@ -12,11 +13,14 @@ export default function PanelsView() {
 
     const [time, setTime] = createSignal({});
     const [sayings, setSayings] = createSignal([]);
+    const [nextSaying, setNextSaying] = createSignal(0);
     const [news, setNews] = createSignal([]);
+    const [nextNews, setNextNews] = createSignal(0);
     const [timers, setTimers] = createSignal([]);
     const [birthdays, setBirthdays] = createSignal([]);
 
     let timer = null;
+    let tick = 1;
 
     onMount(async () => {
         timer = setInterval(() => {
@@ -27,6 +31,13 @@ export default function PanelsView() {
                 time: now.toLocaleTimeString(locale),
                 day: now.toLocaleDateString(locale, { weekday: "long" })
             });
+
+            if (tick % item().cycle_duration === 0) {
+                setNextSaying(current => nextIndex(current, sayings()));
+                setNextNews(current => nextIndex(current, news()));
+            }
+
+            tick += 1;
         }, 1000);
 
         try {
@@ -70,8 +81,17 @@ export default function PanelsView() {
     });
 
     onCleanup(() => {
-        clearInterval(timer)
+        clearInterval(timer);
     });
+
+    function nextIndex(current, array) {
+        const maxIndex = array.length - 1;
+        if (current >= maxIndex) {
+            return 0;
+        } else {
+            return current + 1;
+        }
+    }
 
     return (
         <Show when={item() !== null}>
@@ -96,8 +116,8 @@ export default function PanelsView() {
                                 <div class="text-6xl mb-6">
                                     <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M448 296c0 66.3-53.7 120-120 120h-8c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H320c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72zm-256 0c0 66.3-53.7 120-120 120H64c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H64c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72z" /></svg>
                                 </div>
-                                <div class="text-4xl mb-4">{sayings()[0].item.content}</div>
-                                <div class="text-2xl italic">{sayings()[0].item.author}</div>
+                                <div class="text-4xl mb-4">{sayings()[nextSaying()].item.content}</div>
+                                <div class="text-2xl italic">{sayings()[nextSaying()].item.author}</div>
                             </div>
                         </Show>
                         <Show when={birthdays().length > 0}>
@@ -120,44 +140,18 @@ export default function PanelsView() {
                                         <svg style={`fill: ${item().background_color};`} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M0 64C0 46.3 14.3 32 32 32c229.8 0 416 186.2 416 416c0 17.7-14.3 32-32 32s-32-14.3-32-32C384 253.6 226.4 96 32 96C14.3 96 0 81.7 0 64zM0 416a64 64 0 1 1 128 0A64 64 0 1 1 0 416zM32 160c159.1 0 288 128.9 288 288c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-123.7-100.3-224-224-224c-17.7 0-32-14.3-32-32s14.3-32 32-32z" /></svg>
                                     </figure>
                                     <div class="card-body">
-                                        <h2 class="card-title text-4xl">{news()[0].item.title}</h2>
-                                        <div innerHTML={news()[0].item.content} class="prose text-xl" style={`color: ${item().font_color};`} />
+                                        <h2 class="card-title text-4xl">{news()[nextNews()].item.title}</h2>
+                                        <div innerHTML={news()[nextNews()].item.content} class="prose text-xl" style={`color: ${item().font_color};`} />
                                     </div>
                                 </div>
                             </div>
                         </Show>
                     </div>
-                    <div class="flex-none flex flex-row">
-                        <div class="flex-1 flex flex-row items-center justify-start">
-                            <div class="mx-10">
-                                <div>Naslov</div>
-                                <div class="grid grid-flow-col gap-5 text-center auto-cols-max">
-                                    <div class="flex flex-col">
-                                        <span class="countdown font-mono text-6xl">
-                                            <span style="--value:15;"></span>
-                                        </span>
-                                        dana
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <span class="countdown font-mono text-6xl">
-                                            <span style="--value:10;"></span>
-                                        </span>
-                                        sati
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <span class="countdown font-mono text-6xl">
-                                            <span style="--value:24;"></span>
-                                        </span>
-                                        minuta
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <span class="countdown font-mono text-6xl">
-                                            <span style="--value:52;"></span>
-                                        </span>
-                                        sekundi
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="flex-none flex flex-row items-end justify-end">
+                        <div class="flex-1 flex flex-row items-start justify-start gap-14 p-2">
+                            <For each={timers()}>{(item, i) =>
+                                <CountdownTimer data={item.item} />
+                            }</For>
                         </div>
                         <div class="flex-none">
                             <img class="h-28" src="/qr.svg" alt="QR Code" />
