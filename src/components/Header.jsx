@@ -15,12 +15,12 @@ export default function Header() {
             </div>
             <div class="flex-auto justify-end">
                 <Show when={user() === null}>
-                    <A class="btn btn-outline" href="/user/signin">Prijava</A>
+                    <A class="btn btn-outline mr-2" href="/user/signin">Prijava</A>
+                    <A class="btn btn-outline" href={adminUrl} target="_blank">Administracija</A>
                 </Show>
                 <Show when={user() !== null}>
                     <A class="btn btn-outline mr-2" href="/panels/list">Ploče</A>
                     <A class="btn btn-outline mr-2" href={`${adminUrl}/admin/content/panels/+`} target="_blank">Nova ploča</A>
-                    <A class="btn btn-outline mr-2" href={adminUrl} target="_blank">Administracija</A>
                     <A class="btn btn-outline" href="/user/signout">Odjava</A>
                 </Show>
             </div>
