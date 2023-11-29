@@ -14,9 +14,9 @@ export default function Header() {
                 <A href="/" class="btn btn-ghost text-xl uppercase">{appName}</A>
             </div>
             <div class="flex-auto justify-end">
+                <A class="btn btn-outline" href={adminUrl} target="_blank">Administracija</A>
                 <Show when={user() === null}>
                     <A class="btn btn-outline mr-2" href="/user/signin">Prijava</A>
-                    <A class="btn btn-outline" href={adminUrl} target="_blank">Administracija</A>
                 </Show>
                 <Show when={user() !== null}>
                     <A class="btn btn-outline mr-2" href="/panels/list">Ploče</A>
