@@ -1,5 +1,6 @@
 import { onMount, createSignal, Show } from "solid-js";
 import { A } from "@solidjs/router";
+import { pb } from "../../services/pocketbase";
 
 export default function PanelsList() {
     const [items, setItems] = createSignal([]);
@@ -7,16 +8,18 @@ export default function PanelsList() {
 
     onMount(async () => {
         try {
-            // TODO read list of panels from db
-            // setItems(result);
-            // import.meta.env.DEV && console.log("[onMount] Items fetched", result.length);
+            const result = await pb.collection("panels").getFullList({
+                sort: "-created",
+            });
+            setItems(result);
+            import.meta.env.DEV && console.log("[onMount] Panels loaded", result.length);
         } catch (error) {
             setError(true);
-            // import.meta.env.DEV && console.error(error);
+            import.meta.env.DEV && console.warn("[onMount]", error.message);
         }
     });
 
-    // TODO wire up 'panel edit button'
+    // TODO wire up "panel edit button"
     return (
         <>
             <div class="prose mb-8">

@@ -1,10 +1,9 @@
 import { onMount, onCleanup, createSignal, Show, For } from "solid-js";
 import { useParams } from "@solidjs/router";
 import CountdownTimer from "../../components/CountdownTimer";
+import { pb } from "../../services/pocketbase";
 
 export default function PanelsView() {
-    const adminUrl = "/"; // TODO set admin url
-
     const params = useParams();
 
     const [item, setItem] = createSignal(null);
@@ -41,22 +40,27 @@ export default function PanelsView() {
 
         try {
             const panelId = params.id;
-            // TODO read panel data from db
-            // setItem(result[0]);
+            const result1 = await pb.collection("panels").getOne(panelId, {
+                expand: "news,sayings,timers",
+            });
+            setItem(result1);
+            import.meta.env.DEV && console.log("[onMount] Panel loaded", result1);
+
+            setSayings(item().expand.sayings);
+            setNews(item().expand.news);
+            setTimers(item().expand.timers);
 
             if (item().display_birthdays === true) {
                 const now = new Date();
-                // TODO read birthdays from db
-                // setBirthdays(result);
+                const result2 = await pb.collection("birthdays").getList(1, 100, {
+                    filter: `day = ${now.getDate()} && month = ${now.getMonth() + 1}`,
+                });
+                setBirthdays(result2.items);
+                import.meta.env.DEV && console.log("[onMount] Birthdays loaded", result2.items.length);
             }
-
-            // setSayings(item().elements.filter((item) => item.collection === "sayings"));
-            // setNews(item().elements.filter((item) => item.collection === "news"));
-            // setTimers(item().elements.filter((item) => item.collection === "timers"));
-            // import.meta.env.DEV && console.log("[onMount] Data loaded");
         } catch (error) {
             setError(true);
-            // import.meta.env.DEV && console.error(error);
+            import.meta.env.DEV && console.warn("[onMount]", error.message);
         }
     });
 
@@ -73,14 +77,15 @@ export default function PanelsView() {
         }
     }
 
+    // TODO add logo
     return (
         <Show when={item() !== null}>
             <div style={`background-color: ${item().background_color}; color: ${item().font_color}; font-family: "Quicksand", sans-serif;`} class="min-h-screen">
                 <div class="min-h-screen max-h-screen flex flex-col">
                     <div class="flex-none flex flex-row items-center">
                         <div class="flex-none p-2">
-                            <Show when={item().logo !== null}>
-                                <img class="h-44" src={`${adminUrl}/assets/${item().logo.id}`} alt="Logo" />
+                            <Show when={item().logo && item().logo !== null}>
+                                <img class="h-44" src="/" alt="Logo" />
                             </Show>
                         </div>
                         <div class="flex-1"><h1 class="text-6xl text-center">{item().title}</h1></div>
@@ -96,8 +101,8 @@ export default function PanelsView() {
                                 <div class="text-6xl mb-6">
                                     <svg style={`fill: ${item().font_color};`} class="inline-block" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M448 296c0 66.3-53.7 120-120 120h-8c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H320c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72zm-256 0c0 66.3-53.7 120-120 120H64c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H64c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72z" /></svg>
                                 </div>
-                                <div class="text-4xl mb-4">{sayings()[nextSaying()].item.content}</div>
-                                <div class="text-2xl italic">{sayings()[nextSaying()].item.author}</div>
+                                <div class="text-4xl mb-4">{sayings()[nextSaying()].content}</div>
+                                <div class="text-2xl italic">{sayings()[nextSaying()].author}</div>
                             </div>
                         </Show>
                         <Show when={birthdays().length > 0}>
@@ -107,7 +112,7 @@ export default function PanelsView() {
                                 </div>
                                 <For each={birthdays()}>{(item, i) =>
                                     <div class="text-4xl mb-4">
-                                        {item.name} iz {item.department}
+                                        {item.name} iz {item.group}
                                     </div>
                                 }</For>
                                 <div class="text-2xl italic">Sretan rođendan!</div>
@@ -120,8 +125,8 @@ export default function PanelsView() {
                                         <svg style={`fill: ${item().background_color};`} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M0 64C0 46.3 14.3 32 32 32c229.8 0 416 186.2 416 416c0 17.7-14.3 32-32 32s-32-14.3-32-32C384 253.6 226.4 96 32 96C14.3 96 0 81.7 0 64zM0 416a64 64 0 1 1 128 0A64 64 0 1 1 0 416zM32 160c159.1 0 288 128.9 288 288c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-123.7-100.3-224-224-224c-17.7 0-32-14.3-32-32s14.3-32 32-32z" /></svg>
                                     </figure>
                                     <div class="card-body">
-                                        <h2 class="card-title text-4xl">{news()[nextNews()].item.title}</h2>
-                                        <div innerHTML={news()[nextNews()].item.content} class="prose text-xl" style={`color: ${item().font_color};`} />
+                                        <h2 class="card-title text-4xl">{news()[nextNews()].title}</h2>
+                                        <div innerHTML={news()[nextNews()].content} class="prose text-xl" style={`color: ${item().font_color};`} />
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +135,7 @@ export default function PanelsView() {
                     <div class="flex-none flex flex-row items-end justify-end">
                         <div class="flex-1 flex flex-row items-start justify-start gap-14 p-2">
                             <For each={timers()}>{(item, i) =>
-                                <CountdownTimer data={item.item} />
+                                <CountdownTimer data={item} />
                             }</For>
                         </div>
                         <div class="flex-none">

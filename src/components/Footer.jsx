@@ -11,7 +11,7 @@ export default function Footer() {
         try {
             const result = await pb.collection("static").getFirstListItem("key='privacy_policy'");
             setPrivacyPolicy(result.content);
-            import.meta.env.DEV && console.log("[onMount] Data loaded");
+            import.meta.env.DEV && console.log("[onMount] Privacy policy loaded");
         } catch (error) {
             import.meta.env.DEV && console.warn("[onMount]", error.message);
         }
