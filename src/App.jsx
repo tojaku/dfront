@@ -1,14 +1,14 @@
-import { Routes, Route, Navigate, Outlet } from "@solidjs/router";
-import { AuthorizationBoundary } from "./components/AuthBoundary.jsx";
-import Header from "./components/Header.jsx";
-import Footer from "./components/Footer.jsx";
-import Error from "./pages/Error.jsx";
-import Home from "./pages/Home.jsx";
-import Signin from "./pages/user/Signin.jsx";
-import Signout from "./pages/user/Signout.jsx";
-import Contact from "./pages/Contact.jsx";
-import PanelsList from "./pages/panels/List.jsx";
-import PanelsView from "./pages/panels/View.jsx";
+import { Router, Route, Navigate } from "@solidjs/router";
+import { AuthorizedBoundary, AuthProvider } from "./components/AuthProvider";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Error from "./pages/Error";
+import Home from "./pages/Home";
+import Signin from "./pages/user/Signin";
+import Signout from "./pages/user/Signout";
+import Contact from "./pages/Contact";
+import PanelsList from "./pages/panels/List";
+import PanelsView from "./pages/panels/View";
 
 import "./App.css";
 
@@ -16,15 +16,9 @@ import "./App.css";
 
 export default function App() {
     return (
-        <AuthorizationBoundary>
-            <Routes>
-                <Route path="/" element={
-                    <>
-                        <Header />
-                        <div class="container mx-auto px-4 py-8 min-h-[70vh]"><Outlet /></div>
-                        <Footer />
-                    </>
-                }>
+        <AuthProvider>
+            <Router>
+                <Route path="/" component={DefaultLayout}>
                     <Route path="/" component={Home} />
                     <Route path="/contact" component={Contact} />
                     <Route path="/error" component={Error} />
@@ -33,15 +27,28 @@ export default function App() {
                         <Route path="/signout" component={Signout} />
                     </Route>
                     <Route path="/panels">
-                        <Route path="/list" component={PanelsList} />
+                        <Route path="/list" component={() => <AuthorizedBoundary><PanelsList /></AuthorizedBoundary>} />
                     </Route>
-                    <Route
-                        path="*"
-                        element={<Navigate href="/error" state={{ error: { title: "404", message: "Tražena stranica ne postoji." } }} />}
-                    />
+                    <Route path="*" component={NotFound} />
                 </Route>
                 <Route path="/panels/:id" component={PanelsView} />
-            </Routes>
-        </AuthorizationBoundary>
+            </Router>
+        </AuthProvider>
     )
+}
+
+function DefaultLayout(props) {
+    return (
+        <>
+            <Header />
+            <div class="container mx-auto px-4 py-8 min-h-[70vh]">{props.children}</div>
+            <Footer />
+        </>
+    );
+}
+
+function NotFound() {
+    return (
+        <Navigate href="/error" state={{ error: { title: "404", message: "Tražena stranica ne postoji." } }} />
+    );
 }

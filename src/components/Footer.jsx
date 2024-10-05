@@ -1,36 +1,19 @@
 import { createSignal, onMount, Show } from "solid-js";
 import { A } from "@solidjs/router";
-import { getItems } from "../services/directus.js";
+import { pb } from "../services/pocketbase";
 
 export default function Footer() {
     const appName = import.meta.env.VITE_APP_NAME;
 
     const [privacyPolicy, setPrivacyPolicy] = createSignal(null);
-    const [cookiePolicy, setCookiePolicy] = createSignal(null);
 
     onMount(async () => {
         try {
-            const result = await getItems("static", {
-                filter: {
-                    "id": {
-                        "_in": ["privacy_policy", "cookie_policy"]
-                    }
-                }
-            }, false);
-
-            const privacyPolicyItem = result.find((item) => item.id === "privacy_policy");
-            if (privacyPolicyItem !== undefined) {
-                setPrivacyPolicy(privacyPolicyItem.content);
-                import.meta.env.DEV && console.log("[onMount] Privacy policy loaded");
-            }
-
-            const cookiePolicyItem = result.find((item) => item.id === "cookie_policy");
-            if (cookiePolicyItem !== undefined) {
-                setCookiePolicy(cookiePolicyItem.content);
-                import.meta.env.DEV && console.log("[onMount] Cookie policy loaded");
-            }
+            const result = await pb.collection("static").getFirstListItem("key='privacy_policy'");
+            setPrivacyPolicy(result.content);
+            import.meta.env.DEV && console.log("[onMount] Data loaded");
         } catch (error) {
-            import.meta.env.DEV && console.error(error);
+            import.meta.env.DEV && console.warn("[onMount]", error.message);
         }
     });
 
@@ -39,8 +22,7 @@ export default function Footer() {
             <footer class="footer footer-center p-6 bg-base-200 text-base-content rounded">
                 <nav class="grid grid-flow-col gap-4">
                     <A class="link link-hover" href="/contact">Kontakt</A>
-                    <button class="link link-hover" onClick={() => { modal_privacy_policy.showModal() }}>Politika privatnosti</button>
-                    <button class="link link-hover" onClick={() => { modal_cookie_policy.showModal() }}>Politika kolačića</button>
+                    <button class="link link-hover" onClick={() => { modal_privacy_policy.showModal() }}>Politika privatnosti i kolačića</button>
                 </nav>
                 <nav>
                     <div class="grid grid-flow-col gap-4">
@@ -61,17 +43,6 @@ export default function Footer() {
                     </form>
                     <Show when={privacyPolicy() !== null} fallback={<div>Sadržaj ne može biti učitan.</div>}>
                         <div class="prose w-fit max-w-none py-4" innerHTML={privacyPolicy()} />
-                    </Show>
-                </div>
-            </dialog>
-
-            <dialog id="modal_cookie_policy" class="modal">
-                <div class="modal-box w-11/12 max-w-5xl">
-                    <form method="dialog">
-                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                    </form>
-                    <Show when={cookiePolicy() !== null} fallback={<div>Sadržaj ne može biti učitan.</div>}>
-                        <div class="prose w-fit max-w-none py-4" innerHTML={cookiePolicy()} />
                     </Show>
                 </div>
             </dialog>

@@ -1,13 +1,14 @@
 import { onMount } from "solid-js";
 import { A } from "@solidjs/router";
-import { isAuthorized } from "../../components/AuthBoundary.jsx";
-import { signout } from "../../services/directus.js";
+import { useAuth } from "../../components/AuthProvider";
+import { pb } from "../../services/pocketbase";
 
 export default function Signout() {
-    onMount(async () => {
-        if (!isAuthorized()) return;
+    const user = useAuth();
 
-        await signout();
+    onMount(async () => {
+        if (user() === null) return;
+        pb.authStore.clear();
     });
 
     return (

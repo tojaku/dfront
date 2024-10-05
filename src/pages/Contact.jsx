@@ -1,8 +1,9 @@
 import { createSignal, Show } from "solid-js";
-import { userStore, saveItems } from "../services/directus.js";
+import { useAuth } from "../components/AuthProvider";
+import { pb } from "../services/pocketbase";
 
 export default function Contact() {
-    const [user, setUser] = userStore();
+    const user = useAuth();
 
     const [success, setSuccess] = createSignal(false);
     const [error, setError] = createSignal(false);
@@ -12,14 +13,14 @@ export default function Contact() {
             event.preventDefault();
             setError(false);
             const formData = new FormData(event.target);
-            import.meta.env.DEV && console.log("[formSubmit]", formData);
-            const withCredentials = user() !== null ? true : false;
-            await saveItems("contact", [Object.fromEntries(formData.entries())], withCredentials);
-            import.meta.env.DEV && console.log("[formSubmit] OK");
+            let data = Object.fromEntries(formData.entries());
+            data.member = user() !== null ? true : false;
+            const result = await pb.collection("contact").create(data);
             setSuccess(true);
+            import.meta.env.DEV && console.log("[formSubmit] OK", result);
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.error(error);
+            import.meta.env.DEV && console.warn("[formSubmit]", error.message);
         }
     }
 
@@ -35,7 +36,7 @@ export default function Contact() {
                             <label class="label">
                                 <span class="label-text">Ime</span>
                             </label>
-                            <input type="text" name="name" class="input input-bordered w-full" required="" minLength={8} maxLength={50} />
+                            <input type="text" name="name" class="input input-bordered w-full" required="" minLength={3} maxLength={50} />
                         </div>
                         <div class="form-control w-full">
                             <label class="label">
@@ -45,7 +46,7 @@ export default function Contact() {
                         </div>
                     </Show>
                     <Show when={user() !== null}>
-                        <input type="hidden" name="name" value={user().first_name + " " + user().last_name} />
+                        <input type="hidden" name="name" value={user().name} />
                         <input type="hidden" name="email" value={user().email} />
                     </Show>
                     <div class="form-control w-full">

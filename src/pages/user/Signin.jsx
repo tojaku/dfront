@@ -1,10 +1,10 @@
 import { createSignal, Show } from "solid-js";
 import { A } from "@solidjs/router";
-import { userStore } from "../../services/directus.js";
-import { signin } from "../../services/directus.js";
+import { useAuth } from "../../components/AuthProvider";
+import { pb } from "../../services/pocketbase";
 
 export default function Signin() {
-    const [user, setUser] = userStore();
+    const user = useAuth();
 
     const [error, setError] = createSignal(false);
 
@@ -13,12 +13,14 @@ export default function Signin() {
             event.preventDefault();
             setError(false);
             const formData = new FormData(event.target);
-            import.meta.env.DEV && console.log("[formSubmit]", formData);
-            await signin(formData.get("email"), formData.get("password"));
-            import.meta.env.DEV && console.log("[formSubmit] OK");
+            const result = await pb.collection("users").authWithPassword(
+                formData.get("email"),
+                formData.get("password"),
+            );
+            import.meta.env.DEV && console.log("[formSubmit] Auth success", result);
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.error(error);
+            import.meta.env.DEV && console.warn("[formSubmit]", error.message);
         }
     }
 
@@ -53,7 +55,7 @@ export default function Signin() {
                     <div class="hero-content text-center">
                         <div class="max-w-xl">
                             <h1 class="text-5xl font-bold">Uspješno ste prijavljeni</h1>
-                            <p class="py-6">Prijavljeni ste kao korisnik {user().first_name + " " + user().last_name}. Ukoliko prepoznajete svoj korisnički račun možete nastaviti na naslovnicu. U protivnom se možete se odjaviti.</p>
+                            <p class="py-6">Prijavljeni ste kao korisnik {user().name + " (" + user().email + ")"}. Ukoliko prepoznajete svoj korisnički račun možete nastaviti na naslovnicu. U protivnom se možete se odjaviti.</p>
                             <A class="btn btn-ghost mx-2" href="/user/signout">Odjava</A>
                             <A class="btn btn-primary" href="/">Naslovnica</A>
                         </div>

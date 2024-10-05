@@ -1,10 +1,9 @@
 import { onMount, onCleanup, createSignal, Show, For } from "solid-js";
 import { useParams } from "@solidjs/router";
-import { getItems } from "../../services/directus";
-import CountdownTimer from "../../components/CountdownTimer.jsx";
+import CountdownTimer from "../../components/CountdownTimer";
 
 export default function PanelsView() {
-    const adminUrl = import.meta.env.VITE_DIRECTUS_URL;
+    const adminUrl = "/"; // TODO set admin url
 
     const params = useParams();
 
@@ -42,41 +41,22 @@ export default function PanelsView() {
 
         try {
             const panelId = params.id;
-            let result = await getItems("panels", {
-                fields: "*.*.*",
-                filter: {
-                    "id": {
-                        "_eq": panelId
-                    },
-                }
-            });
-            setItem(result[0]);
+            // TODO read panel data from db
+            // setItem(result[0]);
 
             if (item().display_birthdays === true) {
                 const now = new Date();
-                result = await getItems("birthdays", {
-                    filter: {
-                        "user_created": {
-                            "_eq": "$CURRENT_USER"
-                        },
-                        "day(birthday)": {
-                            "_eq": now.getDate()
-                        },
-                        "month(birthday)": {
-                            "_eq": now.getMonth() + 1
-                        }
-                    }
-                });
-                setBirthdays(result);
+                // TODO read birthdays from db
+                // setBirthdays(result);
             }
 
-            setSayings(item().elements.filter((item) => item.collection === "sayings"));
-            setNews(item().elements.filter((item) => item.collection === "news"));
-            setTimers(item().elements.filter((item) => item.collection === "timers"));
-            import.meta.env.DEV && console.log("[onMount] Data loaded");
+            // setSayings(item().elements.filter((item) => item.collection === "sayings"));
+            // setNews(item().elements.filter((item) => item.collection === "news"));
+            // setTimers(item().elements.filter((item) => item.collection === "timers"));
+            // import.meta.env.DEV && console.log("[onMount] Data loaded");
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.error(error);
+            // import.meta.env.DEV && console.error(error);
         }
     });
 
