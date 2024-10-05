@@ -53,7 +53,7 @@ export default function PanelsView() {
             if (item().display_birthdays === true) {
                 const now = new Date();
                 const result2 = await pb.collection("birthdays").getList(1, 100, {
-                    filter: `day = ${now.getDate()} && month = ${now.getMonth() + 1}`,
+                    filter: `day=${now.getDate()} && month=${now.getMonth() + 1}`,
                 });
                 setBirthdays(result2.items);
                 import.meta.env.DEV && console.log("[onMount] Birthdays loaded", result2.items.length);
