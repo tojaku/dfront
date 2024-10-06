@@ -18,7 +18,7 @@ export default function Header(props) {
                 </Show>
                 <Show when={user() !== null}>
                     <A class="btn btn-outline btn-primary mr-2" href="/panels/list">Ploče</A>
-                    <A class="btn btn-outline btn-secondary mr-2" href="/settings/news">Vijesti</A>
+                    <A class="btn btn-outline btn-primary mr-2" href="/settings/news">Novosti</A>
                     <A class="btn btn-outline" href="/user/signout">Odjava</A>
                 </Show>
             </div>
