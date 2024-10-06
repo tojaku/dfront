@@ -2,12 +2,11 @@ import { Show } from "solid-js";
 import { A } from "@solidjs/router";
 import { useAuth } from "./AuthProvider";
 
-export default function Header() {
+export default function Header(props) {
     const appName = import.meta.env.VITE_APP_NAME;
 
     const user = useAuth();
 
-    // TODO wire up 'settings' 
     return (
         <div class="flex flex-wrap navbar bg-base-200">
             <div class="flex-none">
@@ -18,8 +17,8 @@ export default function Header() {
                     <A class="btn btn-outline mr-2" href="/user/signin">Prijava</A>
                 </Show>
                 <Show when={user() !== null}>
-                    <A class="btn btn-outline mr-2" href="/panels/list">Ploče</A>
-                    <A class="btn btn-outline mr-2" href="/">Postavke</A>
+                    <A class="btn btn-outline btn-primary mr-2" href="/panels/list">Ploče</A>
+                    <A class="btn btn-outline btn-secondary mr-2" href="/settings/news">Vijesti</A>
                     <A class="btn btn-outline" href="/user/signout">Odjava</A>
                 </Show>
             </div>

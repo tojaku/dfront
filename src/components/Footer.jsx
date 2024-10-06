@@ -2,7 +2,7 @@ import { createSignal, onMount, Show } from "solid-js";
 import { A } from "@solidjs/router";
 import { pb } from "../services/pocketbase";
 
-export default function Footer() {
+export default function Footer(props) {
     const appName = import.meta.env.VITE_APP_NAME;
 
     const [privacyPolicy, setPrivacyPolicy] = createSignal(null);

@@ -9,12 +9,13 @@ import Signout from "./pages/user/Signout";
 import Contact from "./pages/Contact";
 import PanelsList from "./pages/panels/List";
 import PanelsView from "./pages/panels/View";
+import SettingsNews from "./pages/settings/News";
 
 import "./App.css";
 
 // "start": "npx http-server ./dist",
 
-export default function App() {
+export default function App(props) {
     return (
         <AuthProvider>
             <Router>
@@ -28,6 +29,9 @@ export default function App() {
                     </Route>
                     <Route path="/panels">
                         <Route path="/list" component={() => <AuthorizedBoundary><PanelsList /></AuthorizedBoundary>} />
+                    </Route>
+                    <Route path="/settings">
+                        <Route path="/news" component={() => <AuthorizedBoundary><SettingsNews /></AuthorizedBoundary>} />
                     </Route>
                     <Route path="*" component={NotFound} />
                 </Route>

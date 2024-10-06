@@ -2,7 +2,7 @@ import { onMount, createSignal, Show } from "solid-js";
 import { A } from "@solidjs/router";
 import { pb } from "../../services/pocketbase";
 
-export default function PanelsList() {
+export default function PanelsList(props) {
     const [items, setItems] = createSignal([]);
     const [error, setError] = createSignal(false);
 

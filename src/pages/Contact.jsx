@@ -2,7 +2,7 @@ import { createSignal, Show } from "solid-js";
 import { useAuth } from "../components/AuthProvider";
 import { pb } from "../services/pocketbase";
 
-export default function Contact() {
+export default function Contact(props) {
     const user = useAuth();
 
     const [success, setSuccess] = createSignal(false);

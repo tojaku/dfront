@@ -3,7 +3,7 @@ import { useParams } from "@solidjs/router";
 import CountdownTimer from "../../components/CountdownTimer";
 import { pb } from "../../services/pocketbase";
 
-export default function PanelsView() {
+export default function PanelsView(props) {
     const params = useParams();
 
     const [item, setItem] = createSignal(null);

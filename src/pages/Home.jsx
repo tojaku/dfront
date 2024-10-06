@@ -1,7 +1,7 @@
 import { onMount, createSignal, Show } from "solid-js";
 import { pb } from "../services/pocketbase";
 
-export default function Home() {
+export default function Home(props) {
     const appName = import.meta.env.VITE_APP_NAME;
 
     const [aboutApplication, setAboutApplication] = createSignal(null);

@@ -1,6 +1,6 @@
 import { useLocation } from "@solidjs/router";
 
-export default function Error() {
+export default function Error(props) {
     const location = useLocation();
 
     return (
