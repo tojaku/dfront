@@ -3,7 +3,10 @@ import CollectionEditor from "../../components/CollectionEditor";
 export default function SettingsSayings(props) {
     return (
         <>
-            <h1 class="text-5xl font-bold">Izreke</h1>
+            <div class="prose mb-8">
+                <h1>Izreke</h1>
+            </div>
+
             <CollectionEditor collection="sayings" display={[{ name: "content", label: "Izreka" }, { name: "author", label: "Autor" }]}>
                 <form>
                     <div class="form-control w-full">

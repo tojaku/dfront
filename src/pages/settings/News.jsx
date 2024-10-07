@@ -3,7 +3,10 @@ import CollectionEditor from "../../components/CollectionEditor";
 export default function SettingsNews(props) {
     return (
         <>
-            <h1 class="text-5xl font-bold">Novosti</h1>
+            <div class="prose mb-8">
+                <h1>Novosti</h1>
+            </div>
+
             <CollectionEditor collection="news" display={[{ name: "title", label: "Naslov" }]}>
                 <form>
                     <div class="form-control w-full">

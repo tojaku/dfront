@@ -13,6 +13,7 @@ import SettingsNews from "./pages/settings/News";
 import SettingsSayings from "./pages/settings/Sayings";
 import SettingsTimers from "./pages/settings/Timers";
 import SettingsBirthdays from "./pages/settings/Birthdays";
+import SettingsPanels from "./pages/settings/Panels";
 
 import "./App.css";
 
@@ -38,6 +39,7 @@ export default function App(props) {
                         <Route path="/sayings" component={() => <AuthorizedBoundary><SettingsSayings /></AuthorizedBoundary>} />
                         <Route path="/timers" component={() => <AuthorizedBoundary><SettingsTimers /></AuthorizedBoundary>} />
                         <Route path="/birthdays" component={() => <AuthorizedBoundary><SettingsBirthdays /></AuthorizedBoundary>} />
+                        <Route path="/panels" component={() => <AuthorizedBoundary><SettingsPanels /></AuthorizedBoundary>} />
                     </Route>
                     <Route path="*" component={NotFound} />
                 </Route>

@@ -3,7 +3,10 @@ import CollectionEditor from "../../components/CollectionEditor";
 export default function SettingsTimers(props) {
     return (
         <>
-            <h1 class="text-5xl font-bold">Brojači</h1>
+            <div class="prose mb-8">
+                <h1>Brojači</h1>
+            </div>
+
             <CollectionEditor collection="timers" display={[{ name: "title", label: "Naslov" }, { name: "end_message", label: "Poruka" }, { name: "goal_time", label: "Datum i vrijeme" }]}>
                 <form>
                     <div class="form-control w-full">

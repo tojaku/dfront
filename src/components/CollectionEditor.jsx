@@ -6,6 +6,7 @@ import { FormDataNormalize } from "../services/misc";
 export default function CollectionEditor(props) {
     const user = useAuth();
 
+    const [error, setError] = createSignal(false);
     const [page, setPage] = createSignal(0);
     const [totalPages, setTotalPages] = createSignal(0);
     const [items, setItems] = createSignal([]);
@@ -20,6 +21,7 @@ export default function CollectionEditor(props) {
     let formContainerRef;
 
     async function loadItems(page) {
+        setError(false);
         try {
             let filter = "";
             if (search().length >= minSearchLength) {
@@ -34,25 +36,11 @@ export default function CollectionEditor(props) {
                 filter: filter
             });
 
-            // TODO transform dates
-            /*
-            {
-                "collectionId": "pbbo66j3jrpsw7v",
-                "collectionName": "timers",
-                "created": "2024-10-05 17:35:19.198Z",
-                "end_message": "Sretan rođendan",
-                "goal_time": "2025-05-26 12:00:00.000Z",
-                "id": "5rdt8wtgdfnu5r1",
-                "title": "Proslava rođendana",
-                "updated": "2024-10-05 17:35:25.393Z",
-                "user": "juwp3oattxkhkah"
-            }
-            */
-
-            /*
-            The specified value "2025-05-26 12:00:00.000Z" does not conform to the required format.  
-            The format is "yyyy-MM-ddThh:mm" followed by optional ":ss" or ":ss.SSS".
-            */
+            // Optional: transform datetime (created and updated)
+            result.items.forEach((element) => {
+                element.created = new Date(element.created).toISOString();
+                element.updated = new Date(element.updated).toISOString();
+            });
 
             setItems((old) => [...old, ...result.items]);
             setPage(page);
@@ -60,6 +48,7 @@ export default function CollectionEditor(props) {
 
             import.meta.env.DEV && console.log("[loadItems] Items loaded", result.items.length);
         } catch (error) {
+            setError(true);
             import.meta.env.DEV && console.warn("[loadItems]", error.message);
         }
     }
@@ -96,20 +85,10 @@ export default function CollectionEditor(props) {
         const formData = new FormData(event.target);
         let data = FormDataNormalize(formData);
 
+        setError(false);
         try {
             if (mode() === "create") {
                 data.user = user().id;
-
-                // TODO transform dates
-                /*
-                {
-                    "title": "Novi brojač",
-                    "end_message": "Sretan kraj novog brojača",
-                    "goal_time": "2024-10-07T17:00",
-                    "user": "juwp3oattxkhkah"
-                }
-                */
-
                 const result = await pb.collection(props.collection).create(data);
                 setItems((old) => [result, ...old]);
                 import.meta.env.DEV && console.log("[formSubmit] Item created");
@@ -124,6 +103,7 @@ export default function CollectionEditor(props) {
                 import.meta.env.DEV && console.log("[formSubmit] Item updated");
             }
         } catch (error) {
+            setError(true);
             import.meta.env.DEV && console.warn("[formSubmit]", error.message);
         }
 
@@ -158,23 +138,32 @@ export default function CollectionEditor(props) {
     }
 
     async function itemDelete(item) {
+        setError(false);
         try {
             await pb.collection(props.collection).delete(item.id);
             setItems((old) => old.filter((element) => element.id !== item.id));
             import.meta.env.DEV && console.log("[itemDelete] OK");
         } catch (error) {
+            setError(true);
             import.meta.env.DEV && console.warn("[itemDelete]", error.message);
         }
     }
 
     return (
         <>
+            <Show when={error() === true}>
+                <div role="alert" class="alert alert-error my-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>Operacija nije uspjela; pokušajte ponovno.</span>
+                </div>
+            </Show>
+
             <div class="flex my-2 pt-2">
                 <div class="join flex-grow">
                     <form onSubmit={searchSubmit} onReset={searchReset}>
                         <input type="text" name="search" class="input input-sm input-bordered join-item" required="" minLength={minSearchLength} />
                         <button class="btn btn-sm btn-outline join-item" type="submit">Traži</button>
-                        <button class="btn btn-sm btn-outline join-item" type="reset">Poništi traženje</button>
+                        <button class="btn btn-sm btn-outline btn-warning join-item" type="reset">Poništi potragu</button>
                     </form>
                 </div>
                 <button class="btn btn-sm btn-outline ml-auto" onClick={() => itemCreate()}>Dodaj</button>
