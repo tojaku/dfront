@@ -1,46 +1,115 @@
-import { createSignal, onMount, For } from "solid-js";
+import { createSignal, onMount, For, Show } from "solid-js";
 import { pb } from "../services/pocketbase";
 import { useAuth } from "./AuthProvider";
+import { FormDataNormalize } from "../services/misc";
 
 export default function CollectionEditor(props) {
     const user = useAuth();
 
-    const [page, setPage] = createSignal(1);
+    const [page, setPage] = createSignal(0);
+    const [totalPages, setTotalPages] = createSignal(0);
     const [items, setItems] = createSignal([]);
     const [selected, setSelected] = createSignal(null);
-    const [mode, setMode] = createSignal(null)
+    const [mode, setMode] = createSignal(null);
+    const [search, setSearch] = createSignal("");
 
     const itemsPerPage = 10;
+    const minSearchLength = 3;
+    const itemsSort = "-created";
+
     let formContainerRef;
 
-    onMount(async () => {
+    async function loadItems(page) {
         try {
-            const result = await pb.collection(props.collection).getList(page(), itemsPerPage, {
-                sort: "-updated",
+            let filter = "";
+            if (search().length >= minSearchLength) {
+                props.display.forEach((element, i) => {
+                    filter += `${element.name}~'%${search()}%'`;
+                    if (i < props.display.length - 1) filter += " || ";
+                });
+            }
+
+            const result = await pb.collection(props.collection).getList(page, itemsPerPage, {
+                sort: itemsSort,
+                filter: filter
             });
-            setItems(result.items);
 
-            console.log(result);
+            // TODO transform dates
+            /*
+            {
+                "collectionId": "pbbo66j3jrpsw7v",
+                "collectionName": "timers",
+                "created": "2024-10-05 17:35:19.198Z",
+                "end_message": "Sretan rođendan",
+                "goal_time": "2025-05-26 12:00:00.000Z",
+                "id": "5rdt8wtgdfnu5r1",
+                "title": "Proslava rođendana",
+                "updated": "2024-10-05 17:35:25.393Z",
+                "user": "juwp3oattxkhkah"
+            }
+            */
 
-            import.meta.env.DEV && console.log("[onMount] Items loaded", result.items.length);
+            /*
+            The specified value "2025-05-26 12:00:00.000Z" does not conform to the required format.  
+            The format is "yyyy-MM-ddThh:mm" followed by optional ":ss" or ":ss.SSS".
+            */
+
+            setItems((old) => [...old, ...result.items]);
+            setPage(page);
+            setTotalPages(result.totalPages);
+
+            import.meta.env.DEV && console.log("[loadItems] Items loaded", result.items.length);
         } catch (error) {
-            import.meta.env.DEV && console.warn("[onMount]", error.message);
+            import.meta.env.DEV && console.warn("[loadItems]", error.message);
         }
+    }
+
+    onMount(async () => {
+        setItems([]);
+        await loadItems(1);
     });
 
-    async function loadMore() {
-        console.log("loading...");
+    async function loadNextPage() {
+        const nextPage = page() + 1;
+        await loadItems(nextPage);
+    }
 
+    async function searchSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const searchTerm = formData.get("search");
+        if (searchTerm.length < minSearchLength) return;
+
+        setSearch(searchTerm);
+        setItems([]);
+        await loadItems(1);
+    }
+
+    async function searchReset() {
+        setSearch("");
+        setItems([]);
+        await loadItems(1);
     }
 
     async function formSubmit(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        let data = Object.fromEntries(formData.entries());
+        let data = FormDataNormalize(formData);
 
         try {
             if (mode() === "create") {
                 data.user = user().id;
+
+                // TODO transform dates
+                /*
+                {
+                    "title": "Novi brojač",
+                    "end_message": "Sretan kraj novog brojača",
+                    "goal_time": "2024-10-07T17:00",
+                    "user": "juwp3oattxkhkah"
+                }
+                */
+
                 const result = await pb.collection(props.collection).create(data);
                 setItems((old) => [result, ...old]);
                 import.meta.env.DEV && console.log("[formSubmit] Item created");
@@ -68,6 +137,7 @@ export default function CollectionEditor(props) {
 
     function itemCreate() {
         setMode("create");
+
         const form = formContainerRef.querySelector("form");
         form.reset();
         modal_form.showModal();
@@ -75,6 +145,7 @@ export default function CollectionEditor(props) {
 
     function itemUpdate(item) {
         setMode("update");
+
         const form = formContainerRef.querySelector("form");
         const elements = form.querySelectorAll("input, textarea, select");
         elements.forEach((element) => {
@@ -82,6 +153,7 @@ export default function CollectionEditor(props) {
             element.value = item[element.name];
         });
         setSelected(item);
+
         modal_form.showModal();
     }
 
@@ -97,8 +169,15 @@ export default function CollectionEditor(props) {
 
     return (
         <>
-            <div class="text-right">
-                <button class="btn btn-sm  btn-outline mb-1" onClick={() => itemCreate()}>Dodaj</button>
+            <div class="flex my-2 pt-2">
+                <div class="join flex-grow">
+                    <form onSubmit={searchSubmit} onReset={searchReset}>
+                        <input type="text" name="search" class="input input-sm input-bordered join-item" required="" minLength={minSearchLength} />
+                        <button class="btn btn-sm btn-outline join-item" type="submit">Traži</button>
+                        <button class="btn btn-sm btn-outline join-item" type="reset">Poništi traženje</button>
+                    </form>
+                </div>
+                <button class="btn btn-sm btn-outline ml-auto" onClick={() => itemCreate()}>Dodaj</button>
             </div>
 
             <For each={items()}>
@@ -120,9 +199,11 @@ export default function CollectionEditor(props) {
                 )}
             </For>
 
-            <div class="text-center">
-                <button class="btn btn-sm btn-outline m-2" onClick={() => loadMore()}>Učitaj još</button>
-            </div>
+            <Show when={totalPages() > page()}>
+                <div class="text-center">
+                    <button class="btn btn-sm btn-outline m-2" onClick={() => loadNextPage()}>Učitaj još</button>
+                </div>
+            </Show>
 
             <dialog id="modal_form" class="modal">
                 <div class="modal-box w-11/12 max-w-5xl">

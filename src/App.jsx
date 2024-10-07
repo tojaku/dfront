@@ -10,6 +10,9 @@ import Contact from "./pages/Contact";
 import PanelsList from "./pages/panels/List";
 import PanelsView from "./pages/panels/View";
 import SettingsNews from "./pages/settings/News";
+import SettingsSayings from "./pages/settings/Sayings";
+import SettingsTimers from "./pages/settings/Timers";
+import SettingsBirthdays from "./pages/settings/Birthdays";
 
 import "./App.css";
 
@@ -32,6 +35,9 @@ export default function App(props) {
                     </Route>
                     <Route path="/settings">
                         <Route path="/news" component={() => <AuthorizedBoundary><SettingsNews /></AuthorizedBoundary>} />
+                        <Route path="/sayings" component={() => <AuthorizedBoundary><SettingsSayings /></AuthorizedBoundary>} />
+                        <Route path="/timers" component={() => <AuthorizedBoundary><SettingsTimers /></AuthorizedBoundary>} />
+                        <Route path="/birthdays" component={() => <AuthorizedBoundary><SettingsBirthdays /></AuthorizedBoundary>} />
                     </Route>
                     <Route path="*" component={NotFound} />
                 </Route>
