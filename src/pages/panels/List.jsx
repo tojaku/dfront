@@ -26,13 +26,15 @@ export default function PanelsList(props) {
                 <h1>Pregled ploča</h1>
             </div>
             <div class="flex flex-wrap gap-4 justify-start items-start">
-                <For each={items()}>{(item, i) =>
-                    <div style={`background-color: ${item.background_color}; color: ${item.font_color}`} class="w-64 min-h-[12vh] shadow-md rounded-md">
-                        <div class="flex p-4 gap-1">
-                            <h2 class="flex-1 text-lg font-bold"><A href={`/panels/${item.id}`} target="_blank">{item.title}</A></h2>
+                <For each={items()} fallback={<div class="text-[0.6em] uppercase">Nema stavaka</div>}>
+                    {(item, i) =>
+                        <div style={`background-color: ${item.background_color}; color: ${item.font_color}`} class="w-64 min-h-[12vh] shadow-md rounded-md">
+                            <div class="flex p-4 gap-1">
+                                <h2 class="flex-1 text-lg font-bold"><A href={`/panels/${item.id}`} target="_blank">{item.title}</A></h2>
+                            </div>
                         </div>
-                    </div>
-                }</For>
+                    }
+                </For>
             </div>
 
             <Show when={error() === true}>

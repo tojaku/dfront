@@ -10,7 +10,7 @@ export default function CollectionEditor(props) {
     const [page, setPage] = createSignal(0);
     const [totalPages, setTotalPages] = createSignal(0);
     const [items, setItems] = createSignal([]);
-    const [selected, setSelected] = createSignal(null);
+    let [selected, setSelected] = createSignal(null); // so it can be connected to parent
     const [mode, setMode] = createSignal(null);
     const [search, setSearch] = createSignal("");
 
@@ -19,6 +19,19 @@ export default function CollectionEditor(props) {
     const itemsSort = "-created";
 
     let formContainerRef;
+
+    onMount(async () => {
+        if (props.selected) { // connect to parent if provided in props
+            const [parentSelected, parentSetSelected] = props.selected;
+            selected = parentSelected;
+            setSelected = parentSetSelected;
+        }
+
+        setItems([]);
+        setPage(0);
+        setTotalPages(0);
+        await loadItems(1);
+    });
 
     async function loadItems(page) {
         setError(false);
@@ -30,7 +43,6 @@ export default function CollectionEditor(props) {
                     if (i < props.display.length - 1) filter += " || ";
                 });
             }
-
             const result = await pb.collection(props.collection).getList(page, itemsPerPage, {
                 sort: itemsSort,
                 filter: filter
@@ -45,18 +57,12 @@ export default function CollectionEditor(props) {
             setItems((old) => [...old, ...result.items]);
             setPage(page);
             setTotalPages(result.totalPages);
-
             import.meta.env.DEV && console.log("[loadItems] Items loaded", result.items.length);
         } catch (error) {
             setError(true);
             import.meta.env.DEV && console.warn("[loadItems]", error.message);
         }
     }
-
-    onMount(async () => {
-        setItems([]);
-        await loadItems(1);
-    });
 
     async function loadNextPage() {
         const nextPage = page() + 1;
@@ -93,7 +99,8 @@ export default function CollectionEditor(props) {
                 setItems((old) => [result, ...old]);
                 import.meta.env.DEV && console.log("[formSubmit] Item created");
             } else if (mode() === "update") {
-                const result = await pb.collection(props.collection).update(selected().id, data);
+                const merged = { ...selected(), ...data }; // merge original object with changes
+                const result = await pb.collection(props.collection).update(selected().id, merged);
                 setItems((old) => {
                     const index = old.findIndex(item => item.id === selected().id);
                     const fresh = [...old];
@@ -137,7 +144,6 @@ export default function CollectionEditor(props) {
             element.value = item[element.name];
         });
         setSelected(item);
-        props.selectedItem && props.selectedItem(item);
 
         modal_form.showModal();
     }
@@ -168,13 +174,13 @@ export default function CollectionEditor(props) {
                     <form onSubmit={searchSubmit} onReset={searchReset}>
                         <input type="text" name="search" class="input input-sm input-bordered join-item" required="" minLength={minSearchLength} />
                         <button class="btn btn-sm btn-outline join-item" type="submit">Traži</button>
-                        <button class="btn btn-sm btn-outline btn-warning join-item" type="reset">Poništi potragu</button>
+                        <button class="btn btn-sm btn-outline join-item" type="reset">Poništi potragu</button>
                     </form>
                 </div>
                 <button class="btn btn-sm btn-outline ml-auto" onClick={() => itemCreate()}>Dodaj</button>
             </div>
 
-            <For each={items()}>
+            <For each={items()} fallback={<div class="text-[0.6em] uppercase">Nema stavaka</div>}>
                 {(item) => (
                     <div class="flex gap-1 items-center p-1 my-1 bg-base-200 rounded">
                         <For each={props.display}>
@@ -201,9 +207,7 @@ export default function CollectionEditor(props) {
 
             <dialog id="modal_form" class="modal">
                 <div class="modal-box w-11/12 max-w-5xl">
-                    <form method="dialog">
-                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                    </form>
+                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={formReset}>✕</button>
                     <div onSubmit={formSubmit} onReset={formReset} ref={formContainerRef}>{props.children}</div>
                 </div>
             </dialog>
