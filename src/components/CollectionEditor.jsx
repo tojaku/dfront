@@ -115,6 +115,10 @@ export default function CollectionEditor(props) {
         modal_form.close();
     }
 
+    function formReset() {
+        modal_form.close();
+    }
+
     function itemCreate() {
         setMode("create");
 
@@ -133,6 +137,7 @@ export default function CollectionEditor(props) {
             element.value = item[element.name];
         });
         setSelected(item);
+        props.selectedItem && props.selectedItem(item);
 
         modal_form.showModal();
     }
@@ -199,7 +204,7 @@ export default function CollectionEditor(props) {
                     <form method="dialog">
                         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    <div onSubmit={formSubmit} ref={formContainerRef}>{props.children}</div>
+                    <div onSubmit={formSubmit} onReset={formReset} ref={formContainerRef}>{props.children}</div>
                 </div>
             </dialog>
         </>

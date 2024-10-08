@@ -1,13 +1,49 @@
+import { createSignal, For } from "solid-js"
 import CollectionEditor from "../../components/CollectionEditor";
+import { pb } from "../../services/pocketbase";
 
 export default function SettingsPanels(props) {
+    const [news, setNews] = createSignal([]);
+    const [sayings, setSayings] = createSignal([]);
+    const [timers, setTimers] = createSignal([]);
+
+    async function setSelectedItem(item) {
+        setNews([]);
+        setSayings([]);
+        setTimers([]);
+
+        try {
+            for (let index = 0; index < item.news.length; index++) {
+                const element = item.news[index];
+                const result = await pb.collection("news").getOne(element);
+                setNews((old) => [...old, result]);
+            }
+
+            for (let index = 0; index < item.sayings.length; index++) {
+                const element = item.sayings[index];
+                const result = await pb.collection("sayings").getOne(element);
+                setSayings((old) => [...old, result]);
+            }
+
+            for (let index = 0; index < item.timers.length; index++) {
+                const element = item.timers[index];
+                const result = await pb.collection("timers").getOne(element);
+                setTimers((old) => [...old, result]);
+            }
+
+            import.meta.env.DEV && console.log("[setSelectedItem] Related items loaded");
+        } catch (error) {
+            import.meta.env.DEV && console.warn("[setSelectedItem]", error.message);
+        }
+    }
+
     return (
         <>
             <div class="prose mb-8">
                 <h1>Ploče</h1>
             </div>
 
-            <CollectionEditor collection="panels" display={[{ name: "title", label: "Naslov" }]}>
+            <CollectionEditor collection="panels" display={[{ name: "title", label: "Naslov" }]} selectedItem={setSelectedItem}>
                 <form>
                     <div class="form-control w-full">
                         <label class="label">
@@ -48,6 +84,42 @@ export default function SettingsPanels(props) {
                         <input class="flex-1 btn w-full" type="reset" value="Poništi" />
                     </div>
                 </form>
+
+                <div role="tablist" class="tabs tabs-lifted">
+                    <input type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Novosti" checked="" />
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                        <ul>
+                            <For each={news()}>
+                                {(item, i) => (
+                                    <li>{item.title}</li>
+                                )}
+                            </For>
+                        </ul>
+                    </div>
+
+                    <input
+                        type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Izreke" />
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                        <ul>
+                            <For each={sayings()}>
+                                {(item, i) => (
+                                    <li>{item.content}</li>
+                                )}
+                            </For>
+                        </ul>
+                    </div>
+
+                    <input type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Brojači" />
+                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                        <ul>
+                            <For each={timers()}>
+                                {(item, i) => (
+                                    <li>{item.title}</li>
+                                )}
+                            </For>
+                        </ul>
+                    </div>
+                </div>
             </CollectionEditor>
         </>
     );
