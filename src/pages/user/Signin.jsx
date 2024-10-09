@@ -8,7 +8,7 @@ export default function Signin() {
 
     const [error, setError] = createSignal(false);
 
-    async function formSubmit(event) {
+    async function submitForm(event) {
         try {
             event.preventDefault();
             setError(false);
@@ -30,7 +30,7 @@ export default function Signin() {
                 <div class="prose mb-8">
                     <h1>Prijava korisnika</h1>
                 </div>
-                <form onSubmit={formSubmit}>
+                <form onSubmit={submitForm}>
                     <div class="form-control w-full">
                         <label class="label">
                             <span class="label-text">E-mail adresa</span>

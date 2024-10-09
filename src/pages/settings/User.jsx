@@ -8,7 +8,7 @@ export default function SettingsUser(props) {
     const [error, setError] = createSignal(false);
     const [success, setSuccess] = createSignal(false);
 
-    async function nameSubmit(event) {
+    async function submitData(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
         const username = formData.get("username");
@@ -29,7 +29,7 @@ export default function SettingsUser(props) {
         }
     }
 
-    async function passwordSubmit(event) {
+    async function changePassword(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
         const oldPassword = formData.get("oldPassword");
@@ -87,7 +87,7 @@ export default function SettingsUser(props) {
 
             <div class="h-6"></div>
 
-            <form onSubmit={nameSubmit}>
+            <form onSubmit={submitData}>
                 <div class="form-control w-full">
                     <label class="label">
                         <span class="label-text">Korisničko ime</span>
@@ -110,7 +110,7 @@ export default function SettingsUser(props) {
 
             <div class="h-6"></div>
 
-            <form onSubmit={passwordSubmit}>
+            <form onSubmit={changePassword}>
                 <div class="form-control w-full">
                     <label class="label">
                         <span class="label-text">Stara zaporka</span>

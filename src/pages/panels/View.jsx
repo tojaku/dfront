@@ -8,8 +8,11 @@ export default function PanelsView(props) {
 
     const [item, setItem] = createSignal(null);
     const [error, setError] = createSignal(false);
-
     const [time, setTime] = createSignal({});
+
+    const [dailySchedule, setDailySchedule] = createSignal(null);
+    const [dailyScheduleData, setDailyScheduleData] = createSignal(null);
+
     const [sayings, setSayings] = createSignal([]);
     const [nextSaying, setNextSaying] = createSignal(0);
     const [news, setNews] = createSignal([]);
@@ -35,6 +38,10 @@ export default function PanelsView(props) {
                 setNextNews(current => nextIndex(current, news()));
             }
 
+            if (dailySchedule() !== null) {
+                setDailyScheduleData(dataFromDailySchedule(dailySchedule(), now));
+            }
+
             tick += 1;
         }, 1000);
 
@@ -46,6 +53,7 @@ export default function PanelsView(props) {
             setItem(result1);
             import.meta.env.DEV && console.log("[onMount] Panel loaded", result1);
 
+            if (item().daily_schedule !== null && item().daily_schedule !== "") setDailySchedule(parseDailySchedule(item().daily_schedule));
             setSayings(item().expand.sayings);
             setNews(item().expand.news);
             setTimers(item().expand.timers);
@@ -63,6 +71,60 @@ export default function PanelsView(props) {
             import.meta.env.DEV && console.warn("[onMount]", error.message);
         }
     });
+
+    function parseDailySchedule(text) {
+        const lines = text.trim().split("\n");
+        const result = [];
+        let currentGroup = null;
+        lines.forEach((line) => {
+            line = line.trim();
+            if (line.startsWith("#")) {
+                currentGroup = { group: line.slice(1).trim(), entries: [] };
+                result.push(currentGroup);
+            } else {
+                const [label, time] = line.split(',');
+                if (currentGroup) {
+                    currentGroup.entries.push({ label: label.trim(), time: time.trim() });
+                }
+            }
+        });
+        return result;
+    }
+
+    function dataFromDailySchedule(array, now) {
+        const lastEntryExtensionMinutes = 5;
+        for (const item of array) {
+            const entries = item.entries;
+            for (let i = 0; i < entries.length; i++) {
+                const currentEntry = entries[i];
+                const nextEntry = entries[i + 1] || null;
+                // Parse current entry time
+                const [startHours, startMinutes] = currentEntry.time.split(":").map(Number);
+                const hourStart = new Date();
+                hourStart.setHours(startHours, startMinutes, 0, 0);
+                // Determine hourEnd (based on next entry or extend by a given number of minutes for the last entry)
+                let hourEnd;
+                if (nextEntry) {
+                    const [nextHours, nextMinutes] = nextEntry.time.split(":").map(Number);
+                    hourEnd = new Date();
+                    hourEnd.setHours(nextHours, nextMinutes, 0, 0);
+                } else {
+                    hourEnd = new Date(hourStart.getTime() + lastEntryExtensionMinutes * 60 * 1000); // Extend last entry
+                }
+                // Check if current time is within the hour
+                if (now >= hourStart && now < hourEnd) {
+                    const remainingMin = Math.round((hourEnd - now) / (1000 * 60)); // Calculate remaining minutes
+                    return {
+                        title: item.group,
+                        label: currentEntry.label,
+                        remaining: remainingMin
+                    };
+                }
+            }
+        }
+        // If no match is found, return null
+        return null;
+    }
 
     onCleanup(() => {
         clearInterval(timer);
@@ -84,16 +146,24 @@ export default function PanelsView(props) {
                 <div class="min-h-screen max-h-screen flex flex-col">
                     <div class="flex-none flex flex-row items-center">
                         <div class="flex-none p-2">
-                            <Show when={item().logo && item().logo !== null}>
-                                <img class="h-44" src="/" alt="Logo" />
+                            <Show when={item().logo !== null && item().logo !== ""}>
+                                <img class="h-44" src={`${import.meta.env.VITE_BACKEND}/api/files/${item().collectionId}/${item().id}/${item().logo}`} alt="Logo" />
                             </Show>
                         </div>
                         <div class="flex-1"><h1 class="text-6xl text-center">{item().title}</h1></div>
-                        <div class="flex-none p-2 pr-8 text-center">
+                        <div class="flex-none p-2 text-center">
                             <h3 class="text-3xl capitalize font-bold">{time().day}</h3>
                             <h3 class="text-2xl">{time().date}</h3>
                             <h2 class="text-3xl">{time().time}</h2>
                         </div>
+                        <Show when={dailyScheduleData() !== null}>
+                            <div class="flex-none p-2 text-center max-w-48">
+                                <h2 class="text-xl font-bold">{dailyScheduleData().title}</h2>
+                                <h2 class="text-xl">{dailyScheduleData().label}</h2>
+                                <h2 class="text-xl">{dailyScheduleData().remaining} min do kraja</h2>
+                            </div>
+                        </Show>
+
                     </div>
                     <div class="flex-1 flex flex-row p-4">
                         <Show when={sayings().length > 0}>

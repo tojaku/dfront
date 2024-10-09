@@ -9,7 +9,7 @@ export default function Contact(props) {
     const [success, setSuccess] = createSignal(false);
     const [error, setError] = createSignal(false);
 
-    async function formSubmit(event) {
+    async function submitForm(event) {
         try {
             event.preventDefault();
             setError(false);
@@ -31,7 +31,7 @@ export default function Contact(props) {
                 <div class="prose mb-8">
                     <h1>Kontaktirajte nas</h1>
                 </div>
-                <form onSubmit={formSubmit}>
+                <form onSubmit={submitForm}>
                     <Show when={user() === null}>
                         <div class="form-control w-full">
                             <label class="label">

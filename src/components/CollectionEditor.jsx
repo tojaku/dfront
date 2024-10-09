@@ -69,7 +69,7 @@ export default function CollectionEditor(props) {
         await loadItems(nextPage);
     }
 
-    async function searchSubmit(event) {
+    async function submitSearch(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
         const searchTerm = formData.get("search");
@@ -86,7 +86,7 @@ export default function CollectionEditor(props) {
         await loadItems(1);
     }
 
-    async function formSubmit(event) {
+    async function submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
         let data = FormDataNormalize(formData);
@@ -122,11 +122,11 @@ export default function CollectionEditor(props) {
         modal_form.close();
     }
 
-    function formReset() {
+    function resetForm() {
         modal_form.close();
     }
 
-    function itemCreate() {
+    function createItem() {
         setMode("create");
 
         const form = formContainerRef.querySelector("form");
@@ -134,13 +134,13 @@ export default function CollectionEditor(props) {
         modal_form.showModal();
     }
 
-    function itemUpdate(item) {
+    function updateItem(item) {
         setMode("update");
 
         const form = formContainerRef.querySelector("form");
         const elements = form.querySelectorAll("input, textarea, select");
         elements.forEach((element) => {
-            if (["submit", "reset"].includes(element.getAttribute("type"))) return;
+            if (["submit", "reset", "file"].includes(element.getAttribute("type"))) return;
             element.value = item[element.name];
         });
         setSelected(item);
@@ -148,7 +148,7 @@ export default function CollectionEditor(props) {
         modal_form.showModal();
     }
 
-    async function itemDelete(item) {
+    async function deleteItem(item) {
         setError(false);
         try {
             await pb.collection(props.collection).delete(item.id);
@@ -170,14 +170,14 @@ export default function CollectionEditor(props) {
             </Show>
 
             <div class="flex my-2 pt-2">
-                <div class="join flex-grow">
-                    <form onSubmit={searchSubmit} onReset={searchReset}>
-                        <input type="text" name="search" class="input input-sm input-bordered join-item" required="" minLength={minSearchLength} />
-                        <button class="btn btn-sm btn-outline join-item" type="submit">Traži</button>
-                        <button class="btn btn-sm btn-outline join-item" type="reset">Poništi potragu</button>
+                <div class="flex-1">
+                    <form onSubmit={submitSearch} onReset={searchReset} class="flex gap-1 flex-wrap">
+                        <input type="text" name="search" class="input input-sm input-bordered" required="" minLength={minSearchLength} />
+                        <button class="btn btn-sm btn-outline" type="submit">Traži</button>
+                        <button class="btn btn-sm btn-outline" type="reset">Poništi</button>
                     </form>
                 </div>
-                <button class="btn btn-sm btn-outline ml-auto" onClick={() => itemCreate()}>Dodaj</button>
+                <button class="btn btn-sm btn-outline flex-initial" onClick={() => createItem()}>Dodaj</button>
             </div>
 
             <For each={items()} fallback={<div class="text-[0.6em] uppercase">Nema stavaka</div>}>
@@ -191,9 +191,9 @@ export default function CollectionEditor(props) {
                                 </div>
                             )}
                         </For>
-                        <div class="join ml-auto">
-                            <button class="btn btn-sm btn-outline join-item" onClick={() => itemUpdate(item)}>Uredi</button>
-                            <button class="btn btn-sm btn-outline btn-error join-item" onClick={() => itemDelete(item)}>Obriši</button>
+                        <div class="flex flex-wrap justify-end gap-1">
+                            <button class="btn btn-sm btn-outline" onClick={() => updateItem(item)}>Uredi</button>
+                            <button class="btn btn-sm btn-outline btn-error" onClick={() => deleteItem(item)}>Obriši</button>
                         </div>
                     </div>
                 )}
@@ -207,8 +207,8 @@ export default function CollectionEditor(props) {
 
             <dialog id="modal_form" class="modal">
                 <div class="modal-box w-11/12 max-w-5xl">
-                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={formReset}>✕</button>
-                    <div onSubmit={formSubmit} onReset={formReset} ref={formContainerRef}>{props.children}</div>
+                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={resetForm}>✕</button>
+                    <div onSubmit={submitForm} onReset={resetForm} ref={formContainerRef}>{props.children}</div>
                 </div>
             </dialog>
         </>

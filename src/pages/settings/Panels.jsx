@@ -16,16 +16,16 @@ export default function SettingsPanels(props) {
 
         if (selected() === null) return;
         try {
-            relatedLoad("news", setNews);
-            relatedLoad("sayings", setSayings);
-            relatedLoad("timers", setTimers);
+            loadRelated("news", setNews);
+            loadRelated("sayings", setSayings);
+            loadRelated("timers", setTimers);
             import.meta.env.DEV && console.log("[createEffect] Related items loaded");
         } catch (error) {
             import.meta.env.DEV && console.warn("[createEffect]", error.message);
         }
     });
 
-    async function relatedLoad(collection, setter) {
+    async function loadRelated(collection, setter) {
         for (let i = 0; i < selected()[collection].length; i++) {
             const element = selected()[collection][i];
             const result = await pb.collection(collection).getOne(element);
@@ -33,7 +33,7 @@ export default function SettingsPanels(props) {
         }
     }
 
-    function relatedRemove(source, id) {
+    function removeRelated(source, id) {
         setSelected((old) => {
             const fresh = JSON.parse(JSON.stringify(old));
             fresh[source] = fresh[source].filter(element => element != id);
@@ -41,7 +41,7 @@ export default function SettingsPanels(props) {
         });
     }
 
-    function relatedSelected(collection, item) {
+    function addRelated(collection, item) {
         if (!selected()[collection].includes(item.id)) {
             setSelected((old) => {
                 const fresh = JSON.parse(JSON.stringify(old));
@@ -49,6 +49,14 @@ export default function SettingsPanels(props) {
                 return fresh;
             });
         }
+    }
+
+    function removeLogo() {
+        setSelected((old) => {
+            const fresh = JSON.parse(JSON.stringify(old));
+            fresh.logo = null;
+            return fresh;
+        });
     }
 
     return (
@@ -64,6 +72,20 @@ export default function SettingsPanels(props) {
                             <span class="label-text">Naslov</span>
                         </label>
                         <input type="text" name="title" class="input input-bordered w-full" required="" minLength={3} maxLength={100} />
+                    </div>
+                    <div class="flex flex-nowrap gap-2 w-full my-4">
+                        <div class="flex-1 form-control w-full">
+                            <label class="label">
+                                <span class="label-text">Logotip</span>
+                            </label>
+                            <input type="file" name="logo" class="file-input file-input-bordered w-full max-w-xs" accept=".jpg,.jpeg,.gif,.png,image/jpeg,image/gif,image/png" />
+                        </div>
+                        <Show when={selected() && selected().logo !== null && selected().logo !== ""}>
+                            <div class="flex-initial text-center">
+                                <img class="h-20" src={`${import.meta.env.VITE_BACKEND}/api/files/${selected().collectionId}/${selected().id}/${selected().logo}`} alt="Logo" />
+                                <button class="btn btn-xs btn-outline btn-error" onClick={removeLogo}>Ukloni</button>
+                            </div>
+                        </Show>
                     </div>
                     <div class="flex flex-nowrap gap-2 w-full my-4">
                         <div class="flex-1 form-control w-full">
@@ -96,6 +118,12 @@ export default function SettingsPanels(props) {
                             </select>
                         </label>
                     </div>
+                    <label class="form-control">
+                        <div class="label">
+                            <span class="label-text">Dnevni raspored</span>
+                        </div>
+                        <textarea name="daily_schedule" class="textarea textarea-bordered h-24" minLength={3} maxLength={1000}></textarea>
+                    </label>
 
                     <div class="flex flex-nowrap gap-2 w-full my-4">
                         <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
@@ -107,19 +135,19 @@ export default function SettingsPanels(props) {
                     <div role="tablist" class="tabs tabs-lifted">
                         <input type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Novosti" checked="" />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <RelatedList items={news()} display="title" collection="news" remove={relatedRemove} />
-                            <RelatedSelect collection="news" display="title" selected={(item) => relatedSelected("news", item)} />
+                            <RelatedList items={news()} display="title" collection="news" remove={removeRelated} />
+                            <RelatedSelect collection="news" display="title" selected={(item) => addRelated("news", item)} />
                         </div>
                         <input
                             type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Izreke" />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <RelatedList items={sayings()} display="content" collection="sayings" remove={relatedRemove} />
-                            <RelatedSelect collection="sayings" display="content" selected={(item) => relatedSelected("sayings", item)} />
+                            <RelatedList items={sayings()} display="content" collection="sayings" remove={removeRelated} />
+                            <RelatedSelect collection="sayings" display="content" selected={(item) => addRelated("sayings", item)} />
                         </div>
                         <input type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Brojači" />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <RelatedList items={timers()} display="title" collection="timers" remove={relatedRemove} />
-                            <RelatedSelect collection="timers" display="title" selected={(item) => relatedSelected("timers", item)} />
+                            <RelatedList items={timers()} display="title" collection="timers" remove={removeRelated} />
+                            <RelatedSelect collection="timers" display="title" selected={(item) => addRelated("timers", item)} />
                         </div>
                     </div>
                 </Show>

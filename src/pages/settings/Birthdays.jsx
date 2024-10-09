@@ -11,7 +11,7 @@ export default function SettingsBirthdays(props) {
     const [error, setError] = createSignal(false);
     const [progress, setProgress] = createSignal({ value: 0, max: 0 });
 
-    async function clearCollection() {
+    async function deleteAll() {
         const isConfirmed = window.confirm("Jeste li sigurni da želite izbrisati sve unose?");
         if (!isConfirmed) return;
 
@@ -96,7 +96,7 @@ export default function SettingsBirthdays(props) {
                 <Show when={progress().max > 0}>
                     <progress class="progress w-56 ml-1" value={progress().value} max={progress().max}></progress>
                 </Show>
-                <button class="btn btn-sm btn-outline btn-error ml-1" onClick={clearCollection}>Obriši sve</button>
+                <button class="btn btn-sm btn-outline btn-error ml-1" onClick={deleteAll}>Obriši sve</button>
                 <button class="btn btn-sm btn-outline ml-1" onClick={() => { upload_form.showModal(); }}>Učitaj iz datoteke</button>
             </div>
 
@@ -153,7 +153,7 @@ export default function SettingsBirthdays(props) {
                         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
                     <form onSubmit={uploadBirthdays}>
-                        <input type="file" name="file" class="file-input file-input-bordered w-full max-w-xs" accept=".xls,application/vnd.ms-excel,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                        <input type="file" name="file" class="file-input file-input-bordered w-full max-w-xs" accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
                         <div class="flex flex-nowrap gap-2 w-full my-4">
                             <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
                             <input class="flex-1 btn w-full" type="reset" value="Poništi" />

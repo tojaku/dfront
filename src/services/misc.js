@@ -9,10 +9,12 @@ export function FormDataNormalize(formData) { // TODO use everywhere
             /* data[key] = null; */
             continue;
         }
-        // skip empty string values
+        // optional: skip empty string values
+        /*
         if (!value || value === "") {
             continue;
         }
+        */
         // gather multiple values under same key into array
         const keys = Object.keys(data);
         if (keys.includes(key)) {
