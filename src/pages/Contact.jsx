@@ -1,6 +1,7 @@
 import { createSignal, Show } from "solid-js";
 import { useAuth } from "../components/AuthProvider";
 import { pb } from "../services/pocketbase";
+import { FormDataNormalize } from "../services/misc";
 
 export default function Contact(props) {
     const user = useAuth();
@@ -13,7 +14,7 @@ export default function Contact(props) {
             event.preventDefault();
             setError(false);
             const formData = new FormData(event.target);
-            let data = Object.fromEntries(formData.entries());
+            let data = FormDataNormalize(formData);
             data.member = user() !== null ? true : false;
             const result = await pb.collection("contact").create(data);
             setSuccess(true);

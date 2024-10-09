@@ -23,6 +23,7 @@ export default function Header(props) {
                     <A class="btn btn-outline btn-primary" href="/settings/timers">Brojači</A>
                     <A class="btn btn-outline btn-primary" href="/settings/birthdays">Rođendani</A>
                     <A class="btn btn-outline btn-primary" href="/settings/panels">Ploče</A>
+                    <A class="btn btn-outline btn-primary" href="/settings/user">Korisnik</A>
                     <A class="btn btn-outline" href="/user/signout">Odjava</A>
                 </Show>
             </div>

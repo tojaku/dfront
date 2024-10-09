@@ -14,6 +14,7 @@ import SettingsSayings from "./pages/settings/Sayings";
 import SettingsTimers from "./pages/settings/Timers";
 import SettingsBirthdays from "./pages/settings/Birthdays";
 import SettingsPanels from "./pages/settings/Panels";
+import SettingsUser from "./pages/settings/User";
 
 import "./App.css";
 
@@ -40,6 +41,7 @@ export default function App(props) {
                         <Route path="/timers" component={() => <AuthorizedBoundary><SettingsTimers /></AuthorizedBoundary>} />
                         <Route path="/birthdays" component={() => <AuthorizedBoundary><SettingsBirthdays /></AuthorizedBoundary>} />
                         <Route path="/panels" component={() => <AuthorizedBoundary><SettingsPanels /></AuthorizedBoundary>} />
+                        <Route path="/user" component={() => <AuthorizedBoundary><SettingsUser /></AuthorizedBoundary>} />
                     </Route>
                     <Route path="*" component={NotFound} />
                 </Route>

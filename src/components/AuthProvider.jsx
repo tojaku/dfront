@@ -28,6 +28,7 @@ export function AuthProvider(props) {
     });
 
     pb.authStore.onChange((token, model) => {
+        import.meta.env.DEV && console.log("[onChange] Session updated");
         setUser(model);
     });
 
