@@ -151,19 +151,18 @@ export default function PanelsView(props) {
                             </Show>
                         </div>
                         <div class="flex-1"><h1 class="text-6xl text-center">{item().title}</h1></div>
-                        <div class="flex-none p-2 text-center">
+                        <Show when={dailyScheduleData() !== null}>
+                            <div class="flex-none p-2 text-center max-w-48">
+                                <h2 class="text-xl">{dailyScheduleData().label}</h2>
+                                <h2 class="text-xl font-bold">{dailyScheduleData().title}</h2>
+                                <h2 class="text-xl">{dailyScheduleData().remaining} min do kraja</h2>
+                            </div>
+                        </Show>
+                        <div class="flex-none p-2 pr-8 text-center">
                             <h3 class="text-3xl capitalize font-bold">{time().day}</h3>
                             <h3 class="text-2xl">{time().date}</h3>
                             <h2 class="text-3xl">{time().time}</h2>
                         </div>
-                        <Show when={dailyScheduleData() !== null}>
-                            <div class="flex-none p-2 text-center max-w-48">
-                                <h2 class="text-xl font-bold">{dailyScheduleData().title}</h2>
-                                <h2 class="text-xl">{dailyScheduleData().label}</h2>
-                                <h2 class="text-xl">{dailyScheduleData().remaining} min do kraja</h2>
-                            </div>
-                        </Show>
-
                     </div>
                     <div class="flex-1 flex flex-row p-4">
                         <Show when={sayings().length > 0}>
@@ -191,10 +190,10 @@ export default function PanelsView(props) {
                         <Show when={news().length > 0}>
                             <div class="flex-1 flex flex-col items-center justify-center p-4">
                                 <div class="card shadow-xl">
-                                    <figure style={`background-color: ${item().font_color};`} class="text-6xl p-6">
+                                    <figure style={`background-color: ${item().font_color};`} class="text-4xl p-2">
                                         <svg style={`fill: ${item().background_color};`} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M0 64C0 46.3 14.3 32 32 32c229.8 0 416 186.2 416 416c0 17.7-14.3 32-32 32s-32-14.3-32-32C384 253.6 226.4 96 32 96C14.3 96 0 81.7 0 64zM0 416a64 64 0 1 1 128 0A64 64 0 1 1 0 416zM32 160c159.1 0 288 128.9 288 288c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-123.7-100.3-224-224-224c-17.7 0-32-14.3-32-32s14.3-32 32-32z" /></svg>
                                     </figure>
-                                    <div class="card-body">
+                                    <div class="card-body p-4">
                                         <h2 class="card-title text-4xl">{news()[nextNews()].title}</h2>
                                         <div innerHTML={news()[nextNews()].content} class="prose text-xl" style={`color: ${item().font_color};`} />
                                     </div>
