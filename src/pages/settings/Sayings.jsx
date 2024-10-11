@@ -13,7 +13,7 @@ export default function SettingsSayings(props) {
                         <label class="label">
                             <span class="label-text">Izreka</span>
                         </label>
-                        <input type="text" name="content" class="input input-bordered w-full" required="" minLength={3} maxLength={100} />
+                        <input type="text" name="content" class="input input-bordered w-full" required="" minLength={3} maxLength={1000} />
                     </div>
                     <div class="form-control w-full">
                         <label class="label">
