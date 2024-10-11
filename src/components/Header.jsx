@@ -19,7 +19,7 @@ export default function Header(props) {
                 <Show when={user() !== null}>
                     <A class="btn btn-outline btn-secondary" href="/panels/list">Izbor ploče za prikaz</A>
                     <A class="btn btn-outline btn-primary" href="/settings/news">Novosti</A>
-                    <A class="btn btn-outline btn-primary" href="/settings/sayings">Izreke</A>
+                    <A class="btn btn-outline btn-primary" href="/settings/quotes">Izreke</A>
                     <A class="btn btn-outline btn-primary" href="/settings/timers">Brojači</A>
                     <A class="btn btn-outline btn-primary" href="/settings/birthdays">Rođendani</A>
                     <A class="btn btn-outline btn-primary" href="/settings/panels">Ploče</A>

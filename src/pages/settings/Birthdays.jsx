@@ -21,9 +21,9 @@ export default function SettingsBirthdays(props) {
                 fields: "id",
             });
             setProgress({ value: 0, max: result.length });
-            for (let index = 0; index < result.length; index++) {
-                await pb.collection("birthdays").delete(result[index].id);
-                setProgress({ value: index + 1, max: result.length });
+            for (let i = 0; i < result.length; i++) {
+                await pb.collection("birthdays").delete(result[i].id);
+                setProgress({ value: i + 1, max: result.length });
             }
             import.meta.env.DEV && console.log("[deleteAll] Deleted birthdays", result.length);
             setProgress({ value: 0, max: 0 });
@@ -71,9 +71,9 @@ export default function SettingsBirthdays(props) {
             });
 
             setProgress({ value: 0, max: items.length });
-            for (let index = 0; index < items.length; index++) {
-                await pb.collection("birthdays").create(items[index]);
-                setProgress({ value: index + 1, max: items.length });
+            for (let i = 0; i < items.length; i++) {
+                await pb.collection("birthdays").create(items[i]);
+                setProgress({ value: i + 1, max: items.length });
             }
             import.meta.env.DEV && console.log("[uploadBirthdays] Items created", items.length);
             setProgress({ value: 0, max: 0 });

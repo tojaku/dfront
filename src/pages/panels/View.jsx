@@ -13,8 +13,8 @@ export default function PanelsView(props) {
     const [dailySchedule, setDailySchedule] = createSignal(null);
     const [dailyScheduleData, setDailyScheduleData] = createSignal(null);
 
-    const [sayings, setSayings] = createSignal([]);
-    const [nextSaying, setNextSaying] = createSignal(0);
+    const [quotes, setQuotes] = createSignal([]);
+    const [nextQuote, setNextQuote] = createSignal(0);
     const [news, setNews] = createSignal([]);
     const [nextNews, setNextNews] = createSignal(0);
     const [timers, setTimers] = createSignal([]);
@@ -34,7 +34,7 @@ export default function PanelsView(props) {
             });
 
             if (tick % item().cycle_duration === 0) {
-                setNextSaying(current => nextIndex(current, sayings()));
+                setNextQuote(current => nextIndex(current, quotes()));
                 //setNextNews(current => nextIndex(current, news()));
             }
 
@@ -48,13 +48,13 @@ export default function PanelsView(props) {
         try {
             const panelId = params.id;
             const result1 = await pb.collection("panels").getOne(panelId, {
-                expand: "news,sayings,timers",
+                expand: "news,quotes,timers",
             });
             setItem(result1);
             import.meta.env.DEV && console.log("[onMount] Panel loaded", result1);
 
             if (item().daily_schedule !== null && item().daily_schedule !== "") setDailySchedule(parseDailySchedule(item().daily_schedule));
-            if (item().expand.sayings) setSayings(item().expand.sayings);
+            if (item().expand.quotes) setQuotes(item().expand.quotes);
             if (item().expand.news) setNews(item().expand.news);
             if (item().expand.timers) setTimers(item().expand.timers);
 
@@ -164,15 +164,15 @@ export default function PanelsView(props) {
                             <h2 class="text-3xl">{time().time}</h2>
                         </div>
                     </div>
-                    <Show when={sayings().length > 0}>
-                        <div class="flex-none flex justify-center"> {/* Row 2 (optional) */}
-                            <div class="flex flex-row gap-3 items-center">
+                    <Show when={quotes().length > 0}>
+                        <div class="flex-none flex justify-center px-4"> {/* Row 2 (optional) */}
+                            <div class="flex flex-row items-center gap-2">
                                 <div class="flex-none text-5xl">
                                     <svg style={`fill: ${item().font_color};`} class="inline-block" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M448 296c0 66.3-53.7 120-120 120h-8c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H320c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72zm-256 0c0 66.3-53.7 120-120 120H64c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H64c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72z" /></svg>
                                 </div>
                                 <div class="flex-1 text-center">
-                                    <span class="text-3xl">{sayings()[nextSaying()].content}</span>
-                                    <span class="text-lg italic ml-2">{sayings()[nextSaying()].author}</span>
+                                    <span class="text-3xl">{quotes()[nextQuote()].content}</span>
+                                    <span class="text-lg italic ml-2">{quotes()[nextQuote()].author}</span>
                                 </div>
                                 <div class="flex-none text-5xl">
                                     <svg style={`fill: ${item().font_color};`} class="inline-block" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M448 296c0 66.3-53.7 120-120 120h-8c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H320c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72zm-256 0c0 66.3-53.7 120-120 120H64c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H64c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72z" /></svg>

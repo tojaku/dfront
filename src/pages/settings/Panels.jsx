@@ -6,18 +6,18 @@ import { pb } from "../../services/pocketbase";
 export default function SettingsPanels(props) {
     const [selected, setSelected] = createSignal(null);
     const [news, setNews] = createSignal([]);
-    const [sayings, setSayings] = createSignal([]);
+    const [quotes, setQuotes] = createSignal([]);
     const [timers, setTimers] = createSignal([]);
 
     createEffect(async () => {
         setNews([]);
-        setSayings([]);
+        setQuotes([]);
         setTimers([]);
 
         if (selected() === null) return;
         try {
             loadRelated("news", setNews);
-            loadRelated("sayings", setSayings);
+            loadRelated("quotes", setQuotes);
             loadRelated("timers", setTimers);
             import.meta.env.DEV && console.log("[createEffect] Related items loaded");
         } catch (error) {
@@ -141,8 +141,8 @@ export default function SettingsPanels(props) {
                         <input
                             type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Izreke" />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <RelatedList items={sayings()} display="content" collection="sayings" remove={removeRelated} />
-                            <RelatedSelect collection="sayings" display="content" selected={(item) => addRelated("sayings", item)} />
+                            <RelatedList items={quotes()} display="content" collection="quotes" remove={removeRelated} />
+                            <RelatedSelect collection="quotes" display="content" selected={(item) => addRelated("quotes", item)} />
                         </div>
                         <input type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Brojači" />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
