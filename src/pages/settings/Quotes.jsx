@@ -1,6 +1,7 @@
 import { createSignal } from "solid-js";
 import CollectionEditor from "../../components/CollectionEditor";
 import { useAuth } from "../../components/AuthProvider";
+import FormButtons from "../../components/FormButtons";
 import { pb } from "../../services/pocketbase";
 
 export default function SettingsQuotes(props) {
@@ -75,11 +76,7 @@ export default function SettingsQuotes(props) {
                         </label>
                         <input type="text" name="author" class="input input-bordered w-full" required="" minLength={3} maxLength={100} />
                     </div>
-
-                    <div class="flex flex-nowrap gap-2 w-full my-4">
-                        <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
-                        <input class="flex-1 btn w-full" type="reset" value="Poništi" />
-                    </div>
+                    <FormButtons />
                 </form>
             </CollectionEditor>
 
@@ -95,10 +92,7 @@ export default function SettingsQuotes(props) {
                             </label>
                             <textarea name="quotes" class="textarea textarea-bordered" required="" rows={10}></textarea>
                         </div>
-                        <div class="flex flex-nowrap gap-2 w-full my-4">
-                            <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
-                            <input class="flex-1 btn w-full" type="reset" value="Poništi" />
-                        </div>
+                        <FormButtons />
                     </form>
                 </div>
             </dialog>

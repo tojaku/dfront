@@ -17,13 +17,13 @@ export default function Header(props) {
                     <A class="btn btn-outline" href="/user/signin">Prijava</A>
                 </Show>
                 <Show when={user() !== null}>
-                    <A class="btn btn-outline btn-secondary" href="/panels/list">Izbor ploče za prikaz</A>
-                    <A class="btn btn-outline btn-primary" href="/settings/news">Novosti</A>
-                    <A class="btn btn-outline btn-primary" href="/settings/quotes">Izreke</A>
-                    <A class="btn btn-outline btn-primary" href="/settings/timers">Brojači</A>
-                    <A class="btn btn-outline btn-primary" href="/settings/birthdays">Rođendani</A>
-                    <A class="btn btn-outline btn-primary" href="/settings/panels">Ploče</A>
-                    <A class="btn btn-outline btn-primary" href="/settings/user">Korisnik</A>
+                    <A class="btn btn-secondary" href="/panels/list">Izbor ploče za prikaz</A>
+                    <A class="btn btn-primary" href="/settings/news">Novosti</A>
+                    <A class="btn btn-primary" href="/settings/quotes">Izreke</A>
+                    <A class="btn btn-primary" href="/settings/timers">Brojači</A>
+                    <A class="btn btn-primary" href="/settings/birthdays">Rođendani</A>
+                    <A class="btn btn-primary" href="/settings/panels">Ploče</A>
+                    <A class="btn btn-primary" href="/settings/user">Korisnik</A>
                     <A class="btn btn-outline" href="/user/signout">Odjava</A>
                 </Show>
             </div>

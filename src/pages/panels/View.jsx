@@ -139,7 +139,6 @@ export default function PanelsView(props) {
         }
     }
 
-    // TODO add logo
     return (
         <Show when={item() !== null}>
             <div style={`background-color: ${item().background_color}; color: ${item().font_color}; font-family: "Quicksand", sans-serif;`} class="min-h-screen">
@@ -166,15 +165,15 @@ export default function PanelsView(props) {
                     </div>
                     <Show when={quotes().length > 0}>
                         <div class="flex-none flex justify-center px-4"> {/* Row 2 (optional) */}
-                            <div class="flex flex-row items-center gap-2">
-                                <div class="flex-none text-5xl">
+                            <div class="flex flex-row gap-2">
+                                <div class="flex-none text-2xl">
                                     <svg style={`fill: ${item().font_color};`} class="inline-block" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M448 296c0 66.3-53.7 120-120 120h-8c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H320c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72zm-256 0c0 66.3-53.7 120-120 120H64c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H64c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72z" /></svg>
                                 </div>
                                 <div class="flex-1 text-center">
                                     <span class="text-3xl">{quotes()[nextQuote()].content}</span>
                                     <span class="text-lg italic ml-2">{quotes()[nextQuote()].author}</span>
                                 </div>
-                                <div class="flex-none text-5xl">
+                                <div class="flex-none text-2xl">
                                     <svg style={`fill: ${item().font_color};`} class="inline-block" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M448 296c0 66.3-53.7 120-120 120h-8c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H320c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72zm-256 0c0 66.3-53.7 120-120 120H64c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H64c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72z" /></svg>
                                 </div>
                             </div>

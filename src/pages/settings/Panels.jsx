@@ -1,6 +1,7 @@
 import { createEffect, createSignal, For, Show } from "solid-js"
 import CollectionEditor from "../../components/CollectionEditor";
 import CollectionSelector from "../../components/CollectionSelector";
+import FormButtons from "../../components/FormButtons";
 import { pb } from "../../services/pocketbase";
 
 export default function SettingsPanels(props) {
@@ -124,30 +125,31 @@ export default function SettingsPanels(props) {
                         </div>
                         <textarea name="daily_schedule" class="textarea textarea-bordered h-24" minLength={3} maxLength={1000}></textarea>
                     </label>
-
-                    <div class="flex flex-nowrap gap-2 w-full my-4">
-                        <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
-                        <input class="flex-1 btn w-full" type="reset" value="Poništi" />
-                    </div>
+                    <FormButtons />
                 </form>
 
                 <Show when={selected() !== null}>
                     <div role="tablist" class="tabs tabs-lifted">
-                        <input type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Novosti" checked="" />
+                        <input type="radio" name="relations_tabs" role="tab" class="tab [--tab-bg:#a65959]" aria-label="Novosti" checked="" />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <RelatedList items={news()} display="title" collection="news" remove={removeRelated} />
-                            <RelatedSelect collection="news" display="title" selected={(item) => addRelated("news", item)} />
+                            <div class="flex gap-2">
+                                <RelatedSelect collection="news" display="title" selected={(item) => addRelated("news", item)} />
+                                <RelatedList items={news()} display="title" collection="news" remove={removeRelated} />
+                            </div>
                         </div>
-                        <input
-                            type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Izreke" />
+                        <input type="radio" name="relations_tabs" role="tab" class="tab [--tab-bg:#a65959]" aria-label="Izreke" />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <RelatedList items={quotes()} display="content" collection="quotes" remove={removeRelated} />
-                            <RelatedSelect collection="quotes" display="content" selected={(item) => addRelated("quotes", item)} />
+                            <div class="flex gap-2">
+                                <RelatedSelect collection="quotes" display="content" selected={(item) => addRelated("quotes", item)} />
+                                <RelatedList items={quotes()} display="content" collection="quotes" remove={removeRelated} />
+                            </div>
                         </div>
-                        <input type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Brojači" />
+                        <input type="radio" name="relations_tabs" role="tab" class="tab [--tab-bg:#a65959]" aria-label="Brojači" />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <RelatedList items={timers()} display="title" collection="timers" remove={removeRelated} />
-                            <RelatedSelect collection="timers" display="title" selected={(item) => addRelated("timers", item)} />
+                            <div class="flex gap-2">
+                                <RelatedSelect collection="timers" display="title" selected={(item) => addRelated("timers", item)} />
+                                <RelatedList items={timers()} display="title" collection="timers" remove={removeRelated} />
+                            </div>
                         </div>
                     </div>
                 </Show>
@@ -158,18 +160,18 @@ export default function SettingsPanels(props) {
 
 function RelatedList(props) {
     return (
-        <div class="prose">
-            <ul>
-                <For each={props.items} fallback={<div class="text-[0.6em] uppercase">Nema stavaka</div>}>
-                    {(item, i) => (
-                        <li>
-                            <div class="inline-block mr-2">{item[props.display]}</div>
-                            <button class="btn btn-sm btn-outline btn-error" onClick={() => props.remove(props.collection, item.id)}>Ukloni</button>
-                        </li>
-                    )}
-                </For>
-            </ul>
+
+        <div class="flex flex-col gap-2">
+            <For each={props.items} fallback={<div class="text-[0.6em] uppercase">Nema stavaka</div>}>
+                {(item, i) => (
+                    <div class="flex items-center gap-2">
+                        <button class="btn btn-sm btn-outline btn-error" onClick={() => props.remove(props.collection, item.id)}>Ukloni</button>
+                        <div class="flex-1">{item[props.display]}</div>
+                    </div>
+                )}
+            </For>
         </div>
+
     );
 }
 
@@ -184,7 +186,7 @@ function RelatedSelect(props) {
 
     return (
         <>
-            <button class="btn w-full my-2" onClick={() => { ref.showModal() }}>Poveži</button>
+            <button class="btn btn-sm btn-outline" onClick={() => { ref.showModal() }}>Traži</button>
             <dialog id={modalId()} ref={ref} class="modal">
                 <div class="modal-box w-11/12 max-w-5xl">
                     <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => { ref.close() }}>✕</button>

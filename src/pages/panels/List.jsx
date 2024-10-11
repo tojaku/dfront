@@ -19,7 +19,6 @@ export default function PanelsList(props) {
         }
     });
 
-    // TODO wire up "panel edit button"
     return (
         <>
             <div class="prose mb-8">

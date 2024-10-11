@@ -1,5 +1,6 @@
 import { createSignal, Show } from "solid-js";
 import { useAuth } from "../../components/AuthProvider";
+import FormButtons from "../../components/FormButtons";
 import { pb } from "../../services/pocketbase";
 
 export default function SettingsUser(props) {
@@ -94,18 +95,13 @@ export default function SettingsUser(props) {
                     </label>
                     <input type="text" name="username" class="input input-bordered w-full" value={user().username} required="" minLength={3} maxLength={100} />
                 </div>
-
                 <div class="form-control w-full">
                     <label class="label">
                         <span class="label-text">Ime</span>
                     </label>
                     <input type="text" name="name" class="input input-bordered w-full" value={user().name} required="" minLength={3} maxLength={100} />
                 </div>
-
-                <div class="flex flex-nowrap gap-2 w-full my-4">
-                    <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
-                    <input class="flex-1 btn w-full" type="reset" value="Poništi" />
-                </div>
+                <FormButtons />
             </form>
 
             <div class="h-6"></div>
@@ -117,25 +113,19 @@ export default function SettingsUser(props) {
                     </label>
                     <input type="password" name="oldPassword" class="input input-bordered w-full" required="" minLength={8} maxLength={100} />
                 </div>
-
                 <div class="form-control w-full">
                     <label class="label">
                         <span class="label-text">Zaporka</span>
                     </label>
                     <input type="password" name="password" class="input input-bordered w-full" required="" minLength={8} maxLength={100} />
                 </div>
-
                 <div class="form-control w-full">
                     <label class="label">
                         <span class="label-text">Potvrda zaporke</span>
                     </label>
                     <input type="password" name="passwordConfirm" class="input input-bordered w-full" required="" minLength={8} maxLength={100} />
                 </div>
-
-                <div class="flex flex-nowrap gap-2 w-full my-4">
-                    <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
-                    <input class="flex-1 btn w-full" type="reset" value="Poništi" />
-                </div>
+                <FormButtons />
             </form>
         </>
     );

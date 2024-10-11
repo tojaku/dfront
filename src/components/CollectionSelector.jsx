@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, onMount } from "solid-js";
 import { pb } from "../services/pocketbase";
 
 export default function CollectionSelector(props) {
@@ -9,6 +9,10 @@ export default function CollectionSelector(props) {
     const itemsPerPage = 5;
     const minSearchLength = 3;
     const itemsSort = "-created";
+
+    onMount(async () => {
+        await loadItems();
+    });
 
     createEffect(async () => {
         if (search().length < minSearchLength) {
@@ -46,19 +50,21 @@ export default function CollectionSelector(props) {
                     value={search()} onInput={(event) => setSearch(event.target.value)} />
             </div>
 
-            <For each={items()} fallback={<div class="text-[0.6em] uppercase">Nema rezultata</div>}>
-                {(item) => (
-                    <div class="flex gap-1 items-center">
-                        <div class="p-1 mb-2">
-                            <div class="text-sm">{item[props.display]}</div>
+            <div class="flex flex-col gap-2">
+                <For each={items()} fallback={<div class="text-[0.6em] uppercase">Nema rezultata</div>}>
+                    {(item) => (
+                        <div class="flex items-center gap-2">
+                            <button class="btn btn-sm btn-outline" onClick={() => { itemSelect(item) }}>Odaberi</button>
+                            <div class="flex-1">
+                                <div class="text-sm">{item[props.display]}</div>
+                            </div>
                         </div>
-                        <button class="btn btn-sm btn-outline" onClick={() => { itemSelect(item) }}>Odaberi</button>
-                    </div>
-                )}
-            </For>
+                    )}
+                </For>
+            </div>
 
             <Show when={totalPages() > 1}>
-                <div class="text-xs italic">Prikazuje se najviše {itemsPerPage} rezultata</div>
+                <div class="text-xs italic mt-2">Prikazuje se najviše {itemsPerPage} rezultata</div>
             </Show>
 
         </>

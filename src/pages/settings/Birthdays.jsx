@@ -3,6 +3,7 @@ import CollectionEditor from "../../components/CollectionEditor";
 import { pb } from "../../services/pocketbase";
 import { FormDataNormalize } from "../../services/misc";
 import { useAuth } from "../../components/AuthProvider";
+import FormButtons from "../../components/FormButtons";
 import * as XLSX from "xlsx";
 
 export default function SettingsBirthdays(props) {
@@ -139,11 +140,7 @@ export default function SettingsBirthdays(props) {
                         </label>
                         <input type="number" name="year" class="input input-bordered w-full" required="" min={1900} max={2100} />
                     </div>
-
-                    <div class="flex flex-nowrap gap-2 w-full my-4">
-                        <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
-                        <input class="flex-1 btn w-full" type="reset" value="Poništi" />
-                    </div>
+                    <FormButtons />
                 </form>
             </CollectionEditor>
 
@@ -154,10 +151,7 @@ export default function SettingsBirthdays(props) {
                     </form>
                     <form onSubmit={uploadBirthdays}>
                         <input type="file" name="file" class="file-input file-input-bordered w-full max-w-xs" accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-                        <div class="flex flex-nowrap gap-2 w-full my-4">
-                            <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
-                            <input class="flex-1 btn w-full" type="reset" value="Poništi" />
-                        </div>
+                        <FormButtons />
                     </form>
                 </div>
             </dialog>

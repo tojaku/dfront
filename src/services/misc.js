@@ -1,5 +1,5 @@
 
-export function FormDataNormalize(formData) { // TODO use everywhere
+export function FormDataNormalize(formData) {
     // custom field processing
     const data = {};
     for (let field of formData) {

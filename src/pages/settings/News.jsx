@@ -1,4 +1,5 @@
 import CollectionEditor from "../../components/CollectionEditor";
+import FormButtons from "../../components/FormButtons";
 
 export default function SettingsNews(props) {
     return (
@@ -22,10 +23,7 @@ export default function SettingsNews(props) {
                         <textarea name="content" class="textarea textarea-bordered" required="" rows={10}></textarea>
                     </div>
 
-                    <div class="flex flex-nowrap gap-2 w-full my-4">
-                        <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
-                        <input class="flex-1 btn w-full" type="reset" value="Poništi" />
-                    </div>
+                    <FormButtons />
                 </form>
             </CollectionEditor>
         </>

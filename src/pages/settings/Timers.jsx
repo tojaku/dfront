@@ -1,4 +1,5 @@
 import CollectionEditor from "../../components/CollectionEditor";
+import FormButtons from "../../components/FormButtons";
 
 export default function SettingsTimers(props) {
     return (
@@ -27,11 +28,7 @@ export default function SettingsTimers(props) {
                         </label>
                         <input type="datetime-local" name="goal_time" class="input input-bordered w-full" required="" />
                     </div>
-
-                    <div class="flex flex-nowrap gap-2 w-full my-4">
-                        <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
-                        <input class="flex-1 btn w-full" type="reset" value="Poništi" />
-                    </div>
+                    <FormButtons />
                 </form>
             </CollectionEditor>
         </>
