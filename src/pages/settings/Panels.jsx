@@ -20,9 +20,8 @@ export default function SettingsPanels(props) {
             loadRelated("news", setNews);
             loadRelated("quotes", setQuotes);
             loadRelated("timers", setTimers);
-            import.meta.env.DEV && console.log("[createEffect] Related items loaded");
         } catch (error) {
-            import.meta.env.DEV && console.warn("[createEffect]", error.message);
+            import.meta.env.DEV && console.warn("Panels related data not loaded", error.message);
         }
     });
 

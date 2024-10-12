@@ -3,7 +3,7 @@ import { A } from "@solidjs/router";
 import { useAuth } from "../../components/AuthProvider";
 import { pb } from "../../services/pocketbase";
 
-export default function Signout() {
+export default function UserSignOut() {
     const user = useAuth();
 
     onMount(async () => {

@@ -26,21 +26,20 @@ export default function SettingsBirthdays(props) {
                 await pb.collection("birthdays").delete(result[i].id);
                 setProgress({ value: i + 1, max: result.length });
             }
-            import.meta.env.DEV && console.log("[deleteAll] Deleted birthdays", result.length);
             setProgress({ value: 0, max: 0 });
             setTimeout(() => {
                 window.location.reload();
             }, 1000);
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.warn("[deleteAll]", error.message);
+            import.meta.env.DEV && console.warn("Birthdays not deleted", error.message);
         }
     }
 
     async function uploadBirthdays(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        let data = FormDataNormalize(formData);
+        const data = FormDataNormalize(formData);
 
         upload_form.close();
         setError(false);
@@ -76,14 +75,13 @@ export default function SettingsBirthdays(props) {
                 await pb.collection("birthdays").create(items[i]);
                 setProgress({ value: i + 1, max: items.length });
             }
-            import.meta.env.DEV && console.log("[uploadBirthdays] Items created", items.length);
             setProgress({ value: 0, max: 0 });
             setTimeout(() => {
                 window.location.reload();
             }, 1000);
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.warn("[uploadBirthdays]", error.message);
+            import.meta.env.DEV && console.warn("Birthdays not created", error.message);
         }
     }
 

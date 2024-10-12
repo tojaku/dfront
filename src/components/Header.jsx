@@ -4,6 +4,7 @@ import { useAuth } from "./AuthProvider";
 
 export default function Header(props) {
     const appName = import.meta.env.VITE_APP_NAME;
+    const selfSignUp = import.meta.env.VITE_SELF_SIGNUP;
 
     const user = useAuth();
 
@@ -15,6 +16,7 @@ export default function Header(props) {
             <div class="flex-1 justify-end flex flex-wrap gap-1">
                 <Show when={user() === null}>
                     <A class="btn btn-outline" href="/user/signin">Prijava</A>
+                    {selfSignUp === true && <A class="btn btn-outline" href="/user/signup">Registracija</A>}
                 </Show>
                 <Show when={user() !== null}>
                     <A class="btn btn-secondary" href="/panels/list">Izbor ploče za prikaz</A>
@@ -23,7 +25,7 @@ export default function Header(props) {
                     <A class="btn btn-primary" href="/settings/timers">Brojači</A>
                     <A class="btn btn-primary" href="/settings/birthdays">Rođendani</A>
                     <A class="btn btn-primary" href="/settings/panels">Ploče</A>
-                    <A class="btn btn-primary" href="/settings/user">Korisnik</A>
+                    <A class="btn btn-primary" href="/user/data">Korisnik</A>
                     <A class="btn btn-outline" href="/user/signout">Odjava</A>
                 </Show>
             </div>

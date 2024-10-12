@@ -10,9 +10,8 @@ export default function Home(props) {
         try {
             const result = await pb.collection("static").getFirstListItem("key='about_app'");
             setAboutApplication(result.content);
-            import.meta.env.DEV && console.log("[onMount] App description loaded");
         } catch (error) {
-            import.meta.env.DEV && console.warn("[onMount]", error.message);
+            import.meta.env.DEV && console.warn("Application description not loaded", error.message);
         }
     });
 

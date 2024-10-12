@@ -12,10 +12,9 @@ export default function PanelsList(props) {
                 sort: "-created",
             });
             setItems(result);
-            import.meta.env.DEV && console.log("[onMount] Panels loaded", result.length);
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.warn("[onMount]", error.message);
+            import.meta.env.DEV && console.warn("Panels not loaded", error.message);
         }
     });
 

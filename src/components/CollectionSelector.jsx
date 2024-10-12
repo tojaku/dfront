@@ -33,9 +33,8 @@ export default function CollectionSelector(props) {
 
             setItems(result.items);
             setTotalPages(result.totalPages);
-            import.meta.env.DEV && console.log("[loadItems] Items loaded", result.items.length);
         } catch (error) {
-            import.meta.env.DEV && console.warn("[loadItems]", error.message);
+            import.meta.env.DEV && console.warn("Items not loaded", error.message);
         }
     }
 

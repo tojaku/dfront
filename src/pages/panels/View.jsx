@@ -51,7 +51,7 @@ export default function PanelsView(props) {
                 expand: "news,quotes,timers",
             });
             setItem(result1);
-            import.meta.env.DEV && console.log("[onMount] Panel loaded", result1);
+            import.meta.env.DEV && console.log("Panel loaded", result1);
 
             if (item().daily_schedule !== null && item().daily_schedule !== "") setDailySchedule(parseDailySchedule(item().daily_schedule));
             if (item().expand.quotes) setQuotes(item().expand.quotes);
@@ -64,11 +64,11 @@ export default function PanelsView(props) {
                     filter: `day=${now.getDate()} && month=${now.getMonth() + 1}`,
                 });
                 setBirthdays(result2.items);
-                import.meta.env.DEV && console.log("[onMount] Birthdays loaded", result2.items.length);
+                import.meta.env.DEV && console.log("Birthdays loaded", result2.items.length);
             }
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.warn("[onMount]", error.message);
+            import.meta.env.DEV && console.warn("Panel not loaded", error.message);
         }
     });
 

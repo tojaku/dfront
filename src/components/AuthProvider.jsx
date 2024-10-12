@@ -18,17 +18,16 @@ export function AuthProvider(props) {
             const result = await pb.collection("users").authRefresh();
             const userData = result.record;
             setUser(userData);
-            import.meta.env.DEV && console.log("[onMount] Session active", userData);
+            import.meta.env.DEV && console.log("Session active", userData);
         } catch (error) {
             setUser(null);
-            import.meta.env.DEV && console.log("[onMount] No session");
         } finally {
             setLoading(false);
         }
     });
 
     pb.authStore.onChange((token, model) => {
-        import.meta.env.DEV && console.log("[onChange] Session updated");
+        import.meta.env.DEV && console.log("Session update");
         setUser(model);
     });
 

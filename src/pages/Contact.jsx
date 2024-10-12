@@ -2,6 +2,7 @@ import { createSignal, Show } from "solid-js";
 import { useAuth } from "../components/AuthProvider";
 import { pb } from "../services/pocketbase";
 import { FormDataNormalize } from "../services/misc";
+import FormButtons from "../components/FormButtons";
 
 export default function Contact(props) {
     const user = useAuth();
@@ -18,10 +19,9 @@ export default function Contact(props) {
             data.member = user() !== null ? true : false;
             const result = await pb.collection("contact").create(data);
             setSuccess(true);
-            import.meta.env.DEV && console.log("[formSubmit] OK", result);
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.warn("[formSubmit]", error.message);
+            import.meta.env.DEV && console.warn("Contact message not saved", error.message);
         }
     }
 
@@ -37,13 +37,13 @@ export default function Contact(props) {
                             <label class="label">
                                 <span class="label-text">Ime</span>
                             </label>
-                            <input type="text" name="name" class="input input-bordered w-full" required="" minLength={3} maxLength={50} />
+                            <input type="text" name="name" class="input input-bordered w-full" required="" minLength={3} maxLength={100} />
                         </div>
                         <div class="form-control w-full">
                             <label class="label">
                                 <span class="label-text">E-mail adresa</span>
                             </label>
-                            <input type="email" name="email" class="input input-bordered w-full" required="" minLength={8} maxLength={50} />
+                            <input type="email" name="email" class="input input-bordered w-full" required="" minLength={8} maxLength={100} />
                         </div>
                     </Show>
                     <Show when={user() !== null}>
@@ -56,11 +56,7 @@ export default function Contact(props) {
                         </label>
                         <textarea name="message" class="textarea textarea-bordered" required="" rows={10}></textarea>
                     </div>
-
-                    <div class="flex flex-nowrap gap-2 w-full my-4">
-                        <input class="flex-1 btn w-full" type="submit" value="Potvrdi" />
-                        <input class="flex-1 btn w-full" type="reset" value="Poništi" />
-                    </div>
+                    <FormButtons />
                 </form>
             </Show>
 

@@ -3,6 +3,7 @@ import CollectionEditor from "../../components/CollectionEditor";
 import { useAuth } from "../../components/AuthProvider";
 import FormButtons from "../../components/FormButtons";
 import { pb } from "../../services/pocketbase";
+import { FormDataNormalize } from "../../services/misc";
 
 export default function SettingsQuotes(props) {
     const user = useAuth();
@@ -13,9 +14,9 @@ export default function SettingsQuotes(props) {
     async function submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const raw = formData.get("quotes");
+        const data = FormDataNormalize(formData);
 
-        const quotesArray = raw.trim().split('\n\n');
+        const quotesArray = data.quotes.trim().split('\n\n');
         const quotes = quotesArray.map(quoteBlock => {
             const lines = quoteBlock.trim().split('\n');
             const content = lines[0].trim();
@@ -31,14 +32,13 @@ export default function SettingsQuotes(props) {
                 quotes[i].user = user().id;
                 await pb.collection("quotes").create(quotes[i]);
             }
-            import.meta.env.DEV && console.log("[submitForm] Items created", quotes.length);
             setProgress({ value: 0, max: 0 });
             setTimeout(() => {
                 window.location.reload();
             }, 1000);
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.warn("[submitForm]", error.message);
+            import.meta.env.DEV && console.warn("Quotes not created", error.message);
         }
     }
 

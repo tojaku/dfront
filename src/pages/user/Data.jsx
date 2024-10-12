@@ -2,8 +2,9 @@ import { createSignal, Show } from "solid-js";
 import { useAuth } from "../../components/AuthProvider";
 import FormButtons from "../../components/FormButtons";
 import { pb } from "../../services/pocketbase";
+import { FormDataNormalize } from "../../services/misc";
 
-export default function SettingsUser(props) {
+export default function UserData(props) {
     const user = useAuth();
 
     const [error, setError] = createSignal(false);
@@ -12,53 +13,41 @@ export default function SettingsUser(props) {
     async function submitData(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const username = formData.get("username");
-        const name = formData.get("name");
-        const data = {};
-        if (username !== user().username) data.username = username;
-        if (name !== user().name) data.name = name;
+        let data = FormDataNormalize(formData);
 
         setError(false);
         setSuccess(false);
         try {
             await pb.collection("users").update(user().id, data);
             setSuccess(true);
-            import.meta.env.DEV && console.log("[nameSubmit] User data updated");
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.warn("[nameSubmit]", error.message);
+            import.meta.env.DEV && console.warn("User data not updated", error.message);
         }
     }
 
     async function changePassword(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const oldPassword = formData.get("oldPassword");
-        const password = formData.get("password");
-        const passwordConfirm = formData.get("passwordConfirm");
-        if (password !== passwordConfirm) {
+        const data = FormDataNormalize(formData);
+
+        if (data.password !== data.passwordConfirm) {
             setError(true);
             return;
         }
-        const data = {
-            oldPassword: oldPassword,
-            password: password,
-            passwordConfirm: passwordConfirm
-        };
 
         setError(false);
         setSuccess(false);
         try {
             await pb.collection("users").update(user().id, data);
             setSuccess(true);
-            import.meta.env.DEV && console.log("[passwordSubmit] User data updated");
             alert("Zbog uspješne promjene zaporke bit ćete automatski odjavljeni.");
             setTimeout(() => {
                 window.location = "/";
             }, 1000);
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.warn("[passwordSubmit]", error.message);
+            import.meta.env.DEV && console.warn("Password not updated", error.message);
         }
     }
 

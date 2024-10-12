@@ -57,10 +57,9 @@ export default function CollectionEditor(props) {
             setItems((old) => [...old, ...result.items]);
             setPage(page);
             setTotalPages(result.totalPages);
-            import.meta.env.DEV && console.log("[loadItems] Items loaded", result.items.length);
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.warn("[loadItems]", error.message);
+            import.meta.env.DEV && console.warn("Items not loaded", error.message);
         }
     }
 
@@ -72,10 +71,10 @@ export default function CollectionEditor(props) {
     async function submitSearch(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const searchTerm = formData.get("search");
-        if (searchTerm.length < minSearchLength) return;
+        const data = FormDataNormalize(formData);
+        if (data.search.length < minSearchLength) return;
 
-        setSearch(searchTerm);
+        setSearch(data.search);
         setItems([]);
         await loadItems(1);
     }
@@ -97,7 +96,6 @@ export default function CollectionEditor(props) {
                 data.user = user().id;
                 const result = await pb.collection(props.collection).create(data);
                 setItems((old) => [result, ...old]);
-                import.meta.env.DEV && console.log("[formSubmit] Item created");
             } else if (mode() === "update") {
                 const merged = { ...selected(), ...data }; // merge original object with changes
                 const result = await pb.collection(props.collection).update(selected().id, merged);
@@ -107,11 +105,10 @@ export default function CollectionEditor(props) {
                     fresh[index] = result;
                     return fresh;
                 });
-                import.meta.env.DEV && console.log("[formSubmit] Item updated");
             }
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.warn("[formSubmit]", error.message);
+            import.meta.env.DEV && console.warn("Item not created or updated", error.message);
         }
 
         setSelected(null);
@@ -153,10 +150,9 @@ export default function CollectionEditor(props) {
         try {
             await pb.collection(props.collection).delete(item.id);
             setItems((old) => old.filter((element) => element.id !== item.id));
-            import.meta.env.DEV && console.log("[itemDelete] OK");
         } catch (error) {
             setError(true);
-            import.meta.env.DEV && console.warn("[itemDelete]", error.message);
+            import.meta.env.DEV && console.warn("Item not deleted", error.message);
         }
     }
 
