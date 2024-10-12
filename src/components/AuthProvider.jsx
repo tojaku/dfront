@@ -18,7 +18,7 @@ export function AuthProvider(props) {
             const result = await pb.collection("users").authRefresh();
             const userData = result.record;
             setUser(userData);
-            import.meta.env.DEV && console.log("Session active", userData);
+            import.meta.env.DEV && console.log("Session active");
         } catch (error) {
             setUser(null);
         } finally {

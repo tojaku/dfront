@@ -5,6 +5,8 @@ import FormButtons from "../../components/FormButtons";
 import { pb } from "../../services/pocketbase";
 
 export default function SettingsPanels(props) {
+    let tabsEnd;
+
     const [selected, setSelected] = createSignal(null);
     const [news, setNews] = createSignal([]);
     const [quotes, setQuotes] = createSignal([]);
@@ -57,6 +59,10 @@ export default function SettingsPanels(props) {
             fresh.logo = null;
             return fresh;
         });
+    }
+
+    function scrollToTabsEnd() {
+        tabsEnd.scrollIntoView({ behavior: "smooth", block: "end" });
     }
 
     return (
@@ -122,28 +128,28 @@ export default function SettingsPanels(props) {
                         <div class="label">
                             <span class="label-text">Dnevni raspored</span>
                         </div>
-                        <textarea name="daily_schedule" class="textarea textarea-bordered h-24" minLength={3} maxLength={1000}></textarea>
+                        <textarea name="daily_schedule" class="textarea textarea-bordered" minLength={3} maxLength={1000}></textarea>
                     </label>
                     <FormButtons />
                 </form>
 
                 <Show when={selected() !== null}>
                     <div role="tablist" class="tabs tabs-lifted">
-                        <input type="radio" name="relations_tabs" role="tab" class="tab [--tab-bg:#a65959]" aria-label="Novosti" checked="" />
+                        <input type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Novosti" checked="" onClick={scrollToTabsEnd} />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
                             <div class="flex gap-2">
                                 <RelatedSelect collection="news" display="title" selected={(item) => addRelated("news", item)} />
                                 <RelatedList items={news()} display="title" collection="news" remove={removeRelated} />
                             </div>
                         </div>
-                        <input type="radio" name="relations_tabs" role="tab" class="tab [--tab-bg:#a65959]" aria-label="Izreke" />
+                        <input type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Izreke" onClick={scrollToTabsEnd} />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
                             <div class="flex gap-2">
                                 <RelatedSelect collection="quotes" display="content" selected={(item) => addRelated("quotes", item)} />
                                 <RelatedList items={quotes()} display="content" collection="quotes" remove={removeRelated} />
                             </div>
                         </div>
-                        <input type="radio" name="relations_tabs" role="tab" class="tab [--tab-bg:#a65959]" aria-label="Brojači" />
+                        <input type="radio" name="relations_tabs" role="tab" class="tab" aria-label="Brojači" onClick={scrollToTabsEnd} />
                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
                             <div class="flex gap-2">
                                 <RelatedSelect collection="timers" display="title" selected={(item) => addRelated("timers", item)} />
@@ -151,6 +157,7 @@ export default function SettingsPanels(props) {
                             </div>
                         </div>
                     </div>
+                    <div ref={tabsEnd}></div>
                 </Show>
             </CollectionEditor>
         </>

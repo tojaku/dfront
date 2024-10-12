@@ -9,6 +9,7 @@ export default function CollectionEditor(props) {
     const [error, setError] = createSignal(false);
     const [page, setPage] = createSignal(0);
     const [totalPages, setTotalPages] = createSignal(0);
+    const [totalItems, setTotalItems] = createSignal(0);
     const [items, setItems] = createSignal([]);
     let [selected, setSelected] = createSignal(null); // so it can be connected to parent
     const [mode, setMode] = createSignal(null);
@@ -30,6 +31,7 @@ export default function CollectionEditor(props) {
         setItems([]);
         setPage(0);
         setTotalPages(0);
+        setTotalItems(0);
         await loadItems(1);
     });
 
@@ -57,6 +59,7 @@ export default function CollectionEditor(props) {
             setItems((old) => [...old, ...result.items]);
             setPage(page);
             setTotalPages(result.totalPages);
+            setTotalItems(result.totalItems);
         } catch (error) {
             setError(true);
             import.meta.env.DEV && console.warn("Items not loaded", error.message);
@@ -165,7 +168,7 @@ export default function CollectionEditor(props) {
                 </div>
             </Show>
 
-            <div class="flex my-2 pt-2">
+            <div class="flex items-center my-2 pt-2">
                 <div class="flex-1">
                     <form onSubmit={submitSearch} onReset={searchReset} class="flex gap-1 flex-wrap">
                         <input type="text" name="search" class="input input-sm input-bordered" required="" minLength={minSearchLength} />
@@ -173,6 +176,7 @@ export default function CollectionEditor(props) {
                         <button class="btn btn-sm btn-outline" type="reset">Poništi</button>
                     </form>
                 </div>
+                <div class="flex-1 text-sm">Prikazano: {items().length} od ukupno {totalItems()}</div>
                 <button class="btn btn-sm btn-outline flex-initial" onClick={() => createItem()}>Dodaj</button>
             </div>
 
