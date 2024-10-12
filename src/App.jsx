@@ -23,7 +23,7 @@ import "./App.css";
 // "start": "npx http-server ./dist",
 
 export default function App(props) {
-    const selfSignUp = import.meta.env.VITE_SELF_SIGNUP;
+    const selfSignUp = Boolean(import.meta.env.VITE_SELF_SIGNUP);
 
     return (
         <AuthProvider>

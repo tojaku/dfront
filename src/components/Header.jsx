@@ -4,7 +4,7 @@ import { useAuth } from "./AuthProvider";
 
 export default function Header(props) {
     const appName = import.meta.env.VITE_APP_NAME;
-    const selfSignUp = import.meta.env.VITE_SELF_SIGNUP;
+    const selfSignUp = Boolean(import.meta.env.VITE_SELF_SIGNUP);
 
     const user = useAuth();
 
