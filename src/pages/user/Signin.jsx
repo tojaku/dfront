@@ -45,7 +45,7 @@ export default function UserSignIn() {
                     </div>
                     <FormButtons />
                 </form>
-                <A class="btn btn-warning w-full" href="/user/resetpassword">Zaboravljena zaporka</A>
+                <A class="btn btn-warning w-full mb-4" href="/user/resetpassword">Zaboravljena zaporka</A>
             </Show>
 
             <Show when={user() !== null}>
