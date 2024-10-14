@@ -13,9 +13,11 @@ export default function SettingsNews(props) {
             theme: "snow",
             modules: {
                 toolbar: [
-                    [{ header: [1, 2, false] }],
+                    [{ header: [1, 2, 3, false] }],
+                    [{ 'color': [] }],
                     ["bold", "italic", "underline"],
-                    ["image", "code-block"]
+                    ["image", "code-block"],
+                    ["clean"]
                 ]
             }
         });
@@ -42,8 +44,8 @@ export default function SettingsNews(props) {
                         <label class="label">
                             <span class="label-text">Sadržaj</span>
                         </label>
-                        <div ref={quillContainer} id="quill-content" class="quill-editor h-60"></div>
-                        <textarea ref={quillTextarea} name="content"></textarea>
+                        <div ref={quillContainer} id="quill-content" class="h-60"></div>
+                        <textarea ref={quillTextarea} name="content" hidden=""></textarea>
                     </div>
                     <FormButtons />
                 </form>

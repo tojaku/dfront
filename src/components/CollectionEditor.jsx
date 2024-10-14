@@ -2,6 +2,7 @@ import { createSignal, onMount, For, Show } from "solid-js";
 import { pb } from "../services/pocketbase";
 import { useAuth } from "./AuthProvider";
 import { FormDataNormalize } from "../services/misc";
+import Quill from "quill";
 
 export default function CollectionEditor(props) {
     const user = useAuth();
@@ -142,9 +143,9 @@ export default function CollectionEditor(props) {
         elements.forEach((element) => {
             if (["submit", "reset", "file"].includes(element.getAttribute("type"))) return;
             element.value = item[element.name];
-            const quillEditorDiv = document.querySelector(`#quill-${element.name}`);
-            if (quillEditorDiv) {
-                quillEditorDiv.innerHTML = item[element.name];
+            const quill = Quill.find(document.querySelector(`#quill-${element.name}`));
+            if (quill) {
+                quill.clipboard.dangerouslyPasteHTML(item[element.name]);
             }
         });
         setSelected(item);
