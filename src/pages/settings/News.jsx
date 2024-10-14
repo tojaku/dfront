@@ -22,17 +22,6 @@ export default function SettingsNews(props) {
         quill.on("text-change", () => {
             quillTextarea.value = quill.root.innerHTML;
         });
-        const observer = new MutationObserver(() => {
-            quillContainer.innerHTML = quillTextarea.value;
-            console.log("updated");
-            
-        });
-        observer.observe(quillTextarea, {
-            attributes: true,
-            childList: true,
-            subtree: true,
-            characterData: true
-        })
     });
 
     return (
@@ -53,8 +42,8 @@ export default function SettingsNews(props) {
                         <label class="label">
                             <span class="label-text">Sadržaj</span>
                         </label>
-                        <div ref={quillContainer} class="quill-editor h-60"></div>
-                        <textarea name="content" ref={quillTextarea}></textarea>
+                        <div ref={quillContainer} id="quill-content" class="quill-editor h-60"></div>
+                        <textarea ref={quillTextarea} name="content"></textarea>
                     </div>
                     <FormButtons />
                 </form>

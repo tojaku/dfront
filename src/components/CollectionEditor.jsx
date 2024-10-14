@@ -142,6 +142,10 @@ export default function CollectionEditor(props) {
         elements.forEach((element) => {
             if (["submit", "reset", "file"].includes(element.getAttribute("type"))) return;
             element.value = item[element.name];
+            const quillEditorDiv = document.querySelector(`#quill-${element.name}`);
+            if (quillEditorDiv) {
+                quillEditorDiv.innerHTML = item[element.name];
+            }
         });
         setSelected(item);
 
