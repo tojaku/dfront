@@ -123,6 +123,15 @@ export default function SettingsPanels(props) {
                                 <option value="false">Ne</option>
                             </select>
                         </label>
+                        <label class="flex-1 form-control w-full max-w-xs">
+                            <div class="label">
+                                <span class="label-text">Prikaži sve izreke</span>
+                            </div>
+                            <select name="display_all_quotes" class="select select-bordered">
+                                <option value="true">Da</option>
+                                <option value="false">Ne</option>
+                            </select>
+                        </label>
                     </div>
                     <label class="form-control">
                         <div class="label">
