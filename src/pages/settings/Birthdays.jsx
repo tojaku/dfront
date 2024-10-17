@@ -63,7 +63,7 @@ export default function SettingsBirthdays(props) {
                         let day = parseInt(dobStr.substring(0, 2));
                         let month = parseInt(dobStr.substring(3, 5));
                         let year = parseInt(dobStr.substring(6, 10));
-                        // let dob = new Date(year, month, day, 0, 0, 0, 0)
+                        // let dob = new Date(year, month-1, day, 0, 0, 0, 0)
                         items.push({ day, month, year, name: `${name} ${surname}`, group: `${classNumber}.${classLabel}`, user: user().id });
                         row++;
                     }
