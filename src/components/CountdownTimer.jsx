@@ -89,7 +89,7 @@ export default function CountdownTimer(props) {
             <Show when={isFinished() === true}>
                 <div>
                     <div>{props.data?.title}</div>
-                    <div className="text-4xl">{props.data.final_message}</div>
+                    <div className="text-4xl">{props.data.end_message}</div>
                 </div>
             </Show>
         </>
