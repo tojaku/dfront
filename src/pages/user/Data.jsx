@@ -80,12 +80,6 @@ export default function UserData(props) {
             <form onSubmit={submitData}>
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text">Korisničko ime</span>
-                    </label>
-                    <input type="text" name="username" class="input input-bordered w-full" value={user().username} required="" minLength={3} maxLength={100} />
-                </div>
-                <div class="form-control w-full">
-                    <label class="label">
                         <span class="label-text">Ime</span>
                     </label>
                     <input type="text" name="name" class="input input-bordered w-full" value={user().name} required="" minLength={3} maxLength={100} />
